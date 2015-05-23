@@ -1,0 +1,20 @@
+{
+  "name": "doplr",
+  "version": "0.0.1",
+  "description": "A modern infrastructure discovery, monitoring and automation toolkit",
+  "bin": "bin/doplr.js",
+  "main": "lib/doplr.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/erulabs/doplr.git"
+  },
+  "author": "Seandon Mooy, Matt Ellsworth",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/erulabs/doplr/issues"
+  },
+  "homepage": "https://github.com/erulabs/doplr#readme"
+}
