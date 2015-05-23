@@ -3,11 +3,13 @@ WARNING! This readme represents our dreams for the project. NONE OF THIS IS CURR
 
 Doplr
 ==========
-"A modern infrastructure discovery, monitoring and automation toolkit"
+"A modern infrastructure platform to discover, render, monitor and automate servers and applications"
 
-Doplr is a command line utility for scanning cloud infrastructures. It will provide high level overviews of the entire environment and each individual component. It also contains WeatherGirl, doplrs web interface. Under the hood, Doplr's sweeps are powered by _floom_, the streaming infrastructure build system.
+Composed of several utilities: sweep for discovery, WeatherGirl to render, forecast to monitor and {scheduler} to automate.
 
 # Sweep
+
+Sweep will be a command line utility for scanning cloud infrastructures. It will gather detailed server, network , device and other cloud service information. It will be able provide high level overviews of the entire environment and each individual component. It will also provide the json data that WeatherGirl will use to render web interface. Doplr's sweeps are powered by _floom_, the streaming infrastructure build system.
 
 Doplr sweep will scan a host and add it to to doplr's "forecast". A forecast is a file which maps out what Doplr has seen so far. Doplr will automatically create a .forecast directory, and all sweeps will _append_ to the forecast. It is generally assumed you'd use distinct directories for distinct infrastructures.
 
@@ -31,17 +33,20 @@ Note that while mass sweeps are parrellized as much as possible, they can still 
 
 # Radar
 
-`doplr radar start` will background the doplr process. Conversely, `doplr radar stop` and `doplr radar status` work as expected. Additionally, for automation purposes, `doplr radar status` will exit with a status of 0 when the service is running and 1 when it is not. Once backgrounded, sweeps can be sent to the background process: `doplr sweep ... --radar`. You can also queue a sweep of the entire known forecast with `doplr sweep --all --radar`.
+Radar will be the service that runs continuos sweeps of an environment to ensure forcasts are up to date.
+
+`doplr radar start` will run sweeps at a configurable interval. Conversely, `doplr radar stop` and `doplr radar status` work as expected. Additionally, for automation purposes, `doplr radar status` will exit with a status of 0 when the service is running and 1 when it is not. Once backgrounded, sweeps can be sent to the background process: `doplr sweep ... --radar`. You can also queue a sweep of the entire known forecast with `doplr sweep --all --radar`.
 
 ## Scheduling
 
 You can very easily schedule sweeps with the cron system using the commands above. However, you can also: `doplr sweep --all --radar --every 5m`
+There will also be a config file that can be edited directly to tune these settings.
 
 # Forecast
 
     doplr forecast
 
-Doplr will report on its findings and give a summary of the state of the infrastructure as currently reported in the forecast file. Note that this action does not do a sweep! It simply generates reports from the current .forecast. Doplr forecast can be run in verbose mode: `doplr forecast -v` or you can specifically ask about a particular host or device: `doplr forecast myserver.com`
+Doplr will report on its findings and give a summary of the state of the infrastructure as currently reported in the forecast file. Note that this action does not do a sweep! It simply generates reports from the current .forecast. Doplr forecast can be run in verbose mode: `doplr forecast -v` or you can specifically ask about a particular host or device: `doplr forecast myserver.com`. In verbose mode this will dump the entire forcast json object that has been stored.
 
 # WeatherGirl
 
@@ -51,7 +56,7 @@ Doplr will host a webserver on port 90404 host WeatherGirl, our awesome web inte
 
     doplr radar start --weathergirl --port=80 [--authentication=htpasswd]
 
-WeatherGirl is able to perform all the other tasks in Doplr. It can schedule sweeps, browse the forecast, schedule sweeps, etc.
+WeatherGirl is able to perform all the other tasks in Doplr. It can schedule sweeps, browse the forecast, schedule sweeps, etc. The goal of this interface is to expose all major features of the doplr suite via a slick wed UI.
 
 # Security
 
