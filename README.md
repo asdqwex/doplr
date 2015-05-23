@@ -61,14 +61,14 @@ By default doplr will simply use your user to attempt to log into systems. Obvio
 
 Doplr makes this easy to bootstrap:
 
-   ssh-keygen ...
-   doplr sweep ec2 --install-doplr-user -i ~/doplr.pem
+    ssh-keygen ...
+    doplr sweep ec2 --install-doplr-user -i ~/doplr.pem
 
 # Speed
 
 Under the hood, doplr uses _floom_. Because of this, doplr by default (like floom) simply uses SSH as a transport. However, floom supports _fireball mode_ - meaning that it will install an agent on the remote system which communicates without the SSH overhead. Doplr sweep can take care of this for you:
 
-   doplr sweep ec2 --install-floom-agent
+    doplr sweep ec2 --install-floom-agent
 
 After that, doplr will remember each host which has the agent installed and attempt to communicate via a websocket on port 93105
 
