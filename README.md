@@ -1,15 +1,17 @@
-WARNING! This readme represents our dreams for the project. NONE OF THIS IS CURRENTLY SUPPORTED OR WORKING.
+### WARNING! This readme represents our dreams for the project. NONE OF THIS IS CURRENTLY SUPPORTED OR WORKING.
 
 
 Doplr
 ==========
-"A modern infrastructure platform to discover, render, monitor and automate servers and applications"
+### The streaming infrastructure monitoring and discovery toolkit
 
-Composed of several utilities: `sweep` for discovery, `forecast` for visualization, the `radar` daemon for backgrounding these tasks, and `weathergirl` - a web service which allows access to sweep and a graphical forecast.
+Composed of several utilities: `sweep` for discovery, `forecast` for visualization, the `radar` daemon for backgrounding these tasks, and `weathergirl` - a web service which allows access to sweep and a graphical look at the `forecast`.
+
+Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier. It's conquered the browser and the server - now it's time to take on infrastructure, operations, and monitoring.
 
 # Sweep
 
-Sweep will be a command line utility for scanning cloud infrastructures. It will gather detailed server, network , device and other cloud service information. It will be able provide high level overviews of the entire environment and each individual component. It will also provide the json data that WeatherGirl will use to render web interface. Doplr's sweeps are powered by _floom_, the streaming infrastructure build system.
+Sweep will be a command line utility for scanning cloud infrastructures. It will gather detailed server, network , device and other cloud service information. It will be able provide high level overviews of the entire environment and each individual component. It will also provide the json data that WeatherGirl will use to render web interface. Because Doplr's sweeps are powered by _floom_, installing the floom fireball daemon goes a very long way to speeding up a sweep.
 
 Doplr sweep will scan a host and add it to to doplr's "forecast". A forecast is a file which maps out what Doplr has seen so far. Doplr will automatically create a .forecast directory, and all sweeps will _append_ to the forecast. It is generally assumed you'd use distinct directories for distinct infrastructures.
 

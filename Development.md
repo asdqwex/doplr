@@ -1,12 +1,16 @@
 Informal list of techs that will be used to build this project:
 
+# Installing:
+
+You'll want to clone the project, `npm install`, and then `npm link`. `npm link` will link the "doplr" CLI tool to the cloned bin/doplr.js - so that you can test as a normal user would.
+
 # High level:
 
 ### Language:
 
   - Strict-mode Javascript. On the server, we'll use io.js 2.0 and thus most of Es6/Es7
   - In the browser, we'll most likely end up with Babel, but will try to avoid needing that if possible.
-  - jslint for linting
+  - eslint for linting
 
 ### Build system:
 
@@ -17,6 +21,7 @@ Informal list of techs that will be used to build this project:
 
   - Floom
   - pm2 (for service control)
+  - yargs (for CLI optstring processing)
 
 ### Test framework:
 
