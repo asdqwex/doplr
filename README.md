@@ -5,7 +5,7 @@ Doplr
 ==========
 "A modern infrastructure platform to discover, render, monitor and automate servers and applications"
 
-Composed of several utilities: sweep for discovery, WeatherGirl to render, forecast to monitor and {scheduler} to automate.
+Composed of several utilities: `sweep` for discovery, `forecast` for visualization, the `radar` daemon for backgrounding these tasks, and `weathergirl` - a web service which allows access to sweep and a graphical forecast.
 
 # Sweep
 
@@ -33,9 +33,9 @@ Note that while mass sweeps are parrellized as much as possible, they can still 
 
 # Radar
 
-Radar will be the service that runs continuos sweeps of an environment to ensure forcasts are up to date.
+Radar provides the ability to background and schedule sweeps via creating a daemon with an HTTP interface.
 
-`doplr radar start` will run sweeps at a configurable interval. Conversely, `doplr radar stop` and `doplr radar status` work as expected. Additionally, for automation purposes, `doplr radar status` will exit with a status of 0 when the service is running and 1 when it is not. Once backgrounded, sweeps can be sent to the background process: `doplr sweep ... --radar`. You can also queue a sweep of the entire known forecast with `doplr sweep --all --radar`.
+`doplr radar start` starts the daemon. Conversely, `doplr radar stop` and `doplr radar status` work as expected. Additionally, for automation purposes, `doplr radar status` will exit with a status of 0 when the service is running and 1 when it is not. Once backgrounded, sweeps can be sent to the background process: `doplr sweep ... --radar`. You can also queue a sweep of the entire known forecast with `doplr sweep --all --radar`.
 
 ## Scheduling
 
@@ -46,21 +46,23 @@ There will also be a config file that can be edited directly to tune these setti
 
     doplr forecast
 
-Doplr will report on its findings and give a summary of the state of the infrastructure as currently reported in the forecast file. Note that this action does not do a sweep! It simply generates reports from the current .forecast. Doplr forecast can be run in verbose mode: `doplr forecast -v` or you can specifically ask about a particular host or device: `doplr forecast myserver.com`. In verbose mode this will dump the entire forcast json object that has been stored.
+Doplr will report on its findings and give a summary of the state of the infrastructure as currently reported in the forecast file. Note that this action does not do a sweep! It simply generates reports from the current .forecast. Doplr forecast can be run in verbose mode: `doplr forecast -v` or you can specifically ask about a particular host or device: `doplr forecast myserver.com`.
 
 # WeatherGirl
 
+WeatherGirl is a pretty web interface which can browse the forecast and schedule and run sweeps.
+
     doplr weathergirl [--radar] [--port=90404]
 
-Doplr will host a webserver on port 90404 host WeatherGirl, our awesome web interface. --radar will have the daemon host it. Conversely, you can start radar with WeatherGirl enabled to start with something like:
+Doplr will host WeatherGirl on port 90404. --radar will have the daemon host it. Conversely, you can start radar with WeatherGirl enabled to start with something like:
 
     doplr radar start --weathergirl --port=80 [--authentication=htpasswd]
 
-WeatherGirl is able to perform all the other tasks in Doplr. It can schedule sweeps, browse the forecast, schedule sweeps, etc. The goal of this interface is to expose all major features of the doplr suite via a slick wed UI.
+WeatherGirl is able to perform all the other tasks in Doplr. The goal of this interface is to expose all major features of the doplr suite via a slick web UI. WeatherGirls end game goal would be to compete with Ubuntu's JuJu and entirely replace Graphite/Grafana.
 
 # Security
 
-By default doplr will simply use your user to attempt to log into systems. Obviously, this is not typically desired or secure, particularly for a weathergirl server. There are two ways to accomplish this task: Bootstrap a dedicated SSH user, or install a doplr agent on the remote systems.
+By default doplr will simply use the current user to attempt to log into systems. Obviously, this is not typically desired or secure, particularly for a weathergirl server. There are two ways to accomplish this task: Bootstrap a dedicated SSH user, or install a doplr agent on the remote systems.
 
     doplr sweep host doplr@myserver.com -i somekey.pem
 
