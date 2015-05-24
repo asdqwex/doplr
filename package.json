@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/erulabs/doplr#readme",
   "dependencies": {
+    "gulp": "^3.8.11",
     "yargs": "^3.9.1"
   }
 }
