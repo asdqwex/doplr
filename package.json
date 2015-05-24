@@ -4,6 +4,7 @@
   "description": "A modern infrastructure discovery, monitoring and automation toolkit",
   "bin": "bin/doplr.js",
   "preferGlobal": true,
+  "engines": ">= 2.0.2",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/erulabs/doplr/issues"
   },
-  "homepage": "https://github.com/erulabs/doplr#readme"
+  "homepage": "https://github.com/erulabs/doplr#readme",
+  "dependencies": {
+    "yargs": "^3.9.1"
+  }
 }
