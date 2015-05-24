@@ -1,11 +1,7 @@
-### WARNING! This readme represents our dreams for the project. NONE OF THIS IS CURRENTLY SUPPORTED OR WORKING.
-
-[![Join the chat at https://gitter.im/asdqwex/doplr](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/asdqwex/doplr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-
-Doplr
-==========
+# Doplr
 ### The streaming infrastructure monitoring and discovery toolkit
+==========
+[![Join the chat at https://gitter.im/asdqwex/doplr](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/asdqwex/doplr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Composed of several utilities: `sweep` for discovery, `forecast` for visualization, the `radar` daemon for backgrounding these tasks, and `weathergirl` - a web service which allows access to sweep and a graphical look at the `forecast`.
 
@@ -13,7 +9,7 @@ Doplr is built on top of _floom_, the streaming infrastructure build system. Dop
 
 # Sweep
 
-Sweep is doplr's discovery action. It is able to scan a host, a network, and most importantly, a cloud providers API. Because Doplr's sweeps are powered by _floom_, installing the floom fireball daemon goes a very long way to speeding up a sweep.
+Sweep is doplr's discovery action. It is able to scan a host, a network, and most importantly, a cloud providers API. Doplr's sweeps are powered by _floom_, both for discovering hosts via a cloud providers API, as well as probing hosts themselves via SSH or floom's fireball daemon.
 
 Doplr sweep will scan a host and add it to to doplr's "forecast". A forecast what Doplr calls the data which represents what it has seen so far. Doplr will automatically create a .forecast directory, and all sweeps will _append_ to the forecast. It is generally assumed you'd use distinct directories for distinct infrastructures, but Doplr will optimistically search up the directory chain for a .forecast (exactly like git's behavior).
 
