@@ -10,8 +10,16 @@ If you're using the ATOM editor (well, any editor really, but i'm only going to 
 
 Jade support: `apm install language-jade`
 
-
 # High level:
+
+### Dev Support:
+
+  - Agile via Waffle: https://waffle.io/asdqwex/doplr
+  - Community Chat via Gitter (TODO)
+  - Tests via CircleCI (TODO)
+  - Coverage via Coveralls (TODO)
+  - Dep checking via Gemnasium (TODO)
+  - Developer site via GitHub pages (TODO)
 
 ### Language:
 
