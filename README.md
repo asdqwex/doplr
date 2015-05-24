@@ -11,9 +11,9 @@ Doplr is built on top of _floom_, the streaming infrastructure build system. Dop
 
 # Sweep
 
-Sweep will be a command line utility for scanning cloud infrastructures. It will gather detailed server, network , device and other cloud service information. It will be able provide high level overviews of the entire environment and each individual component. It will also provide the json data that WeatherGirl will use to render web interface. Because Doplr's sweeps are powered by _floom_, installing the floom fireball daemon goes a very long way to speeding up a sweep.
+Sweep is doplr's discovery action. It is able to scan a host, a network, and most importantly, a cloud providers API. Because Doplr's sweeps are powered by _floom_, installing the floom fireball daemon goes a very long way to speeding up a sweep.
 
-Doplr sweep will scan a host and add it to to doplr's "forecast". A forecast is a file which maps out what Doplr has seen so far. Doplr will automatically create a .forecast directory, and all sweeps will _append_ to the forecast. It is generally assumed you'd use distinct directories for distinct infrastructures.
+Doplr sweep will scan a host and add it to to doplr's "forecast". A forecast what Doplr calls the data which represents what it has seen so far. Doplr will automatically create a .forecast directory, and all sweeps will _append_ to the forecast. It is generally assumed you'd use distinct directories for distinct infrastructures, but Doplr will optimistically search up the directory chain for a .forecast (exactly like git's behavior).
 
     doplr sweep host myserver.com
 

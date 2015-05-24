@@ -7,37 +7,26 @@
 const argv = require('yargs')
   .count('verbose')
   .alias('v', 'verbose')
+  .command('sweep', 'Discover a host, network, or cloud provider')
+  .command('radar', 'Controls a local Doplr daemon, allowing for task backgrounding')
+  .command('forecast', 'A CLI tool for browsing the forecast data')
+  .command('weathergirl', 'Launches a web interface for Doplr')
+  .demand(1)
+  .example('doplr sweep myhost.com', 'gather information about myhost.com and add to forecast')
+  .example('doplr forecast myhost.com', 'display known facts about myhost.com')
+  .example('doplr radar start', 'start the doplr daemon')
+  .example('doplr sweep --all --radar', 'have the daemon sweep all known infrastructure')
+  .example('doplr radar start --weathergirl', 'start a daemon which will host the web interface')
+  .example('doplr weathergirl --radar', 'have the running radar daemon start weathergirl')
+  .help('h')
+  .epilog('Created by Seandon "erulabs" Mooy and Matthew "asdqwex" Ellsworth')
   .argv;
-const USAGE_STRING = 'Usage: doplr <action> [options...] [--options...]';
-const ACTIONS = ['sweep', 'forecast', 'radar', 'weathergirl']
-const ACTION_STRING = 'Available actions are: ' + ACTIONS.join(' ');
 
-// If no non-hyphenated options are present - ie: no action
-if (argv._.length === 0) {
-  console.log(USAGE_STRING);
-  process.exit(1);
-}
-
-// Help!
-if (argv.help || argv.usage) {
-  console.log(USAGE_STRING);
-  process.exit(0);
-}
-
+// The first non-hypenated option is the "action"
 const chosen_action = argv._[0];
-// Note that this is the --radar option, which implies we're sending this _to_
-// the a radar daemon. As opposed to 'doplr radar' which starts/stops the daemon
-const SEND_TO_DAEMON = argv.radar;
-
-// Make sure the action is one of ACTIONS
-if (ACTIONS.indexOf(chosen_action) === -1) {
-  console.log('No such action "' + chosen_action + '".');
-  console.log(ACTION_STRING);
-  process.exit(1);
-}
 
 // If we're gonna queue this message agianst a daemon...
-if (SEND_TO_DAEMON) {
+if (argv.radar) {
   // Send messages to DAEMONs via HTTP (HTTPS eventually)
   const http = require('http');
 
