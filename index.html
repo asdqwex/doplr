@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Doplr by asdqwex</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Doplr</h1>
+      <h2 class="project-tagline">Cloudy Radar</h2>
+      <a href="https://github.com/asdqwex/doplr" class="btn">View on GitHub</a>
+      <a href="https://github.com/asdqwex/doplr/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/asdqwex/doplr/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="doplr" class="anchor" href="#doplr" aria-hidden="true"><span class="octicon octicon-link"></span></a>Doplr</h1>
+
+<h3>
+<a id="the-streaming-infrastructure-monitoring-and-discovery-toolkit" class="anchor" href="#the-streaming-infrastructure-monitoring-and-discovery-toolkit" aria-hidden="true"><span class="octicon octicon-link"></span></a>The streaming infrastructure monitoring and discovery toolkit</h3>
+
+<h1></h1>
+
+<p><a href="https://gitter.im/asdqwex/doplr?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Join the chat at https://gitter.im/asdqwex/doplr"></a></p>
+
+<p>Composed of several utilities: <code>sweep</code> for discovery, <code>forecast</code> for visualization, the <code>radar</code> daemon for backgrounding these tasks, and <code>weathergirl</code> - a web service which allows access to sweep and a graphical look at the <code>forecast</code>.</p>
+
+<p>Doplr is built on top of <em>floom</em>, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier. It's conquered the browser and the server - now it's time to take on infrastructure, operations, and monitoring.</p>
+
+<h1>
+<a id="sweep" class="anchor" href="#sweep" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sweep</h1>
+
+<p>Sweep is doplr's discovery action. It is able to scan a host, a network, and most importantly, a cloud providers API. Doplr's sweeps are powered by <em>floom</em>, both for discovering hosts via a cloud providers API, as well as probing hosts themselves via SSH or floom's fireball daemon.</p>
+
+<p>Doplr sweep will scan a host and add it to to doplr's "forecast". A forecast what Doplr calls the data which represents what it has seen so far. Doplr will automatically create a .forecast directory, and all sweeps will <em>append</em> to the forecast. It is generally assumed you'd use distinct directories for distinct infrastructures, but Doplr will optimistically search up the directory chain for a .forecast (exactly like git's behavior).</p>
+
+<pre><code>doplr sweep host myserver.com
+</code></pre>
+
+<p>Assuming you can SSH to myserver.com, doplr will add that host to the "forecast".</p>
+
+<p>Doplr can also sweep entire cloud providers, doing all the hard work for you!</p>
+
+<pre><code>doplr sweep aws AWS_SECRET_ID AWS_SECRET_KEY
+</code></pre>
+
+<p>We aim to support sweeping AWS, Google Cloud, Azure and OpenStack. Assuming you're sweeping a cloud, you don't need to deal with any other details or upkeep. If you're manually sweeping hosts, you might sometimes need to:</p>
+
+<pre><code>doplr sweep host myserver.com --delete
+</code></pre>
+
+<p>To scan the entire forecast (all known elements in the infrastructure):</p>
+
+<pre><code>doplr sweep --all
+</code></pre>
+
+<p>Note that while mass sweeps are parrellized as much as possible, they can still take a <em>long time</em>. By default Doplr's agent will not observe the host longer than it needs to (in the case of information collection, this is configurable via <code>--observefor NUM_SECONDS</code>, and defaults to 15 seconds). On production hosts, 15 seconds is typically more than enough time to gather meaningful date. Because sweeping often for brief periods of time is typically the best strategy, Doplr can easily be run in daemon mode:</p>
+
+<h1>
+<a id="radar" class="anchor" href="#radar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Radar</h1>
+
+<p>Radar provides the ability to background and schedule sweeps via creating a daemon with an HTTP interface.</p>
+
+<p><code>doplr radar start</code> starts the daemon. Conversely, <code>doplr radar stop</code> and <code>doplr radar status</code> work as expected. Additionally, for automation purposes, <code>doplr radar status</code> will exit with a status of 0 when the service is running and 1 when it is not. Once backgrounded, sweeps can be sent to the background process: <code>doplr sweep ... --radar</code>. You can also queue a sweep of the entire known forecast with <code>doplr sweep --all --radar</code>.</p>
+
+<h2>
+<a id="scheduling" class="anchor" href="#scheduling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Scheduling</h2>
+
+<p>You can very easily schedule sweeps with the cron system using the commands above. However, you can also: <code>doplr sweep --all --radar --every 5m</code>
+There will also be a config file that can be edited directly to tune these settings.</p>
+
+<h1>
+<a id="forecast" class="anchor" href="#forecast" aria-hidden="true"><span class="octicon octicon-link"></span></a>Forecast</h1>
+
+<pre><code>doplr forecast
+</code></pre>
+
+<p>Doplr will report on its findings and give a summary of the state of the infrastructure as currently reported in the forecast file. Note that this action does not do a sweep! It simply generates reports from the current .forecast. Doplr forecast can be run in verbose mode: <code>doplr forecast -v</code> or you can specifically ask about a particular host or device: <code>doplr forecast myserver.com</code>.</p>
+
+<h1>
+<a id="weathergirl" class="anchor" href="#weathergirl" aria-hidden="true"><span class="octicon octicon-link"></span></a>WeatherGirl</h1>
+
+<p>WeatherGirl is a pretty web interface which can browse the forecast and schedule and run sweeps.</p>
+
+<pre><code>doplr weathergirl [--radar] [--port=90404]
+</code></pre>
+
+<p>Doplr will host WeatherGirl on port 90404. --radar will have the daemon host it. Conversely, you can start radar with WeatherGirl enabled to start with something like:</p>
+
+<pre><code>doplr radar start --weathergirl --port=80 [--authentication=htpasswd]
+</code></pre>
+
+<p>WeatherGirl is able to perform all the other tasks in Doplr. The goal of this interface is to expose all major features of the doplr suite via a slick web UI. WeatherGirls end game goal would be to compete with Ubuntu's JuJu and entirely replace Graphite/Grafana.</p>
+
+<h1>
+<a id="security" class="anchor" href="#security" aria-hidden="true"><span class="octicon octicon-link"></span></a>Security</h1>
+
+<p>By default doplr will simply use the current user to attempt to log into systems. Obviously, this is not typically desired or secure, particularly for a weathergirl server. There are two ways to accomplish this task: Bootstrap a dedicated SSH user, or install a doplr agent on the remote systems.</p>
+
+<pre><code>doplr sweep host doplr@myserver.com -i somekey.pem
+</code></pre>
+
+<p>Doplr makes this easy to bootstrap:</p>
+
+<pre><code>ssh-keygen ...
+doplr sweep ec2 --install-doplr-user -i ~/doplr.pem
+</code></pre>
+
+<h1>
+<a id="speed" class="anchor" href="#speed" aria-hidden="true"><span class="octicon octicon-link"></span></a>Speed</h1>
+
+<p>Under the hood, doplr uses <em>floom</em>. Because of this, doplr by default (like floom) simply uses SSH as a transport. However, floom supports <em>fireball mode</em> - meaning that it will install an agent on the remote system which communicates without the SSH overhead. Doplr sweep can take care of this for you:</p>
+
+<pre><code>doplr sweep ec2 --install-floom-agent
+</code></pre>
+
+<p>After that, doplr will remember each host which has the agent installed and attempt to communicate via a websocket on port 93105</p>
+
+<p>Remember that all of this can be controlled via WeatherGirl!</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/asdqwex/doplr">Doplr</a> is maintained by <a href="https://github.com/asdqwex">asdqwex</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
