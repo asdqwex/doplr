@@ -4,7 +4,11 @@
 // Doplr.js CLI entry point
 
 // Load lib/doplr
-import { Doplr, CONSTANTS } from "./../lib";
+const Doplr = require("./../lib");
+const CONSTANTS = require("./../lib/constants.js");
+
+const fs = require("fs");
+const path = require("path");
 
 // https://github.com/bcoe/yargs
 const argv = require("yargs")
@@ -19,8 +23,8 @@ const argv = require("yargs")
   .alias("r", "radar")
   .alias("w", "weathergirl")
   .command("sweep", "Discover a host, network, or cloud provider")
-  .command("radar", "Controls a local Doplr daemon, allowing for task backgrounding")
   .command("forecast", "A CLI tool for browsing the forecast data")
+  .command("radar", "Controls a local Doplr daemon, allowing for task backgrounding")
   .command("weathergirl", "Launches a web interface for Doplr")
   .demand(1)
   .example("doplr sweep myhost.com", "gather information about myhost.com and add to forecast")
@@ -33,40 +37,51 @@ const argv = require("yargs")
   .epilog("Created by Seandon \"erulabs\" Mooy and Matthew \"asdqwex\" Ellsworth")
   .argv;
 
-// The first non-hypenated option is the "action"
-const chosenAction = argv._[0];
-
-const fs = require("fs");
-const path = require("path");
+// Logging (should probably use winston here)
+function logWarn () {
+  if (argv.verbose) { console.log.apply(console, arguments); }
+}
+function logDebug () {
+  if (argv.verbose > 1) { console.log.apply(console, arguments); }
+}
 
 // Find the nearest .forecast storage, unless one has been specified
 function locateForecast (p) {
-  p = p + CONSTANTS.FORECAST_DIRECTORY_NAME;
-  if (fs.existsSync()) {
-    return p;
-  } else {
-    p = p.split(path.sep);
-    p.pop();
-    if (p.length > 1) {
-      p.join(path.sep);
-      return locateForecast(p);
-    } else {
-      fs.mkdirSync("");
-    }
+  const fp = p + path.sep + CONSTANTS.FORECAST_DIRECTORY;
+  if (fs.existsSync(fp)) {
+    return fp;
   }
+  p = p.split(path.sep);
+  p.pop();
+  if (p.length > 0) {
+    p = p.join(path.sep);
+    return locateForecast(p);
+  }
+  return false;
 }
-// locateForecast(argv.forecast.replace(CONSTANTS.FORECAST_DIRECTORY_NAME, ""));
+let targetForecast = locateForecast(
+  path.resolve(argv.forecast.replace(CONSTANTS.FORECAST_DIRECTORY, ""))
+);
+// If there isn't a forecast in the directory path, we'll create one here
+if (!targetForecast) {
+  logDebug("No forecast directory found, creating new...");
+  targetForecast = CONSTANTS.FORECAST_DIRECTORY;
+}
+logWarn(`Using ${targetForecast}`);
 
-// If we"re gonna queue this message agianst a daemon...
+// The first non-hypenated option is the "action"
+// const chosenAction = argv._[0];
+
+// If we're gonna queue this message agianst a daemon...
 if (argv.radar) {
   // Send messages to DAEMONs via HTTP (HTTPS eventually)
-  const http = require("http");
+  //const http = require("http");
 
   // POST /chosen_action { data: options } ...
 
-// If we"re going to do this ourselves, in this thread.
+// If we're going to do this ourselves, in this thread.
 } else {
-  const doplr = new Doplr();
+  //const doplr = new Doplr();
 
   // doplr[chosen_action](options) ...
 
