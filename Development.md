@@ -19,7 +19,7 @@ Jade support: `apm install language-jade`
   - Tests via CircleCI: https://circleci.com/gh/asdqwex/doplr
   - Coverage via Coveralls: https://coveralls.io/r/asdqwex/doplr
   - Dep checking via Gemnasium (TODO)
-  - Developer site via GitHub pages (TODO)
+  - Developer site via GitHub pages: http://asdqwex.github.io/doplr/
 
 ### Language:
 
