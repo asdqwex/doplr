@@ -1,6 +1,6 @@
 # Doplr
 ### The infrastructure discovery toolkit
-[![Join the chat at https://gitter.im/asdqwex/doplr](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/asdqwex/doplr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Circle CI](https://circleci.com/gh/asdqwex/doplr/tree/master.svg?style=svg)](https://circleci.com/gh/asdqwex/doplr/tree/master)
+[![Join the chat at https://gitter.im/asdqwex/doplr](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/asdqwex/doplr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Circle CI](https://circleci.com/gh/asdqwex/doplr/tree/master.svg?style=svg)](https://circleci.com/gh/asdqwex/doplr/tree/master) [![Coverage Status](https://coveralls.io/repos/asdqwex/doplr/badge.svg?branch=master)](https://coveralls.io/r/asdqwex/doplr?branch=master) [![Code Climate](https://codeclimate.com/github/asdqwex/doplr/badges/gpa.svg)](https://codeclimate.com/github/asdqwex/doplr) [![Dependency Status](https://gemnasium.com/asdqwex/doplr.svg)](https://gemnasium.com/asdqwex/doplr) [![Stories in Ready](https://badge.waffle.io/asdqwex/doplr.png?label=ready&title=Ready)](https://waffle.io/asdqwex/doplr)
 
 Composed of several utilities: `sweep` for discovery, `forecast` for visualization, the `radar` daemon for backgrounding these tasks, and `weathergirl` - a web service which allows access to sweep and a graphical look at the `forecast`.
 
