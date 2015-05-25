@@ -1,5 +1,5 @@
 # Doplr
-### The streaming infrastructure monitoring and discovery toolkit
+### The streaming infrastructure toolkit
 ==========
 [![Join the chat at https://gitter.im/asdqwex/doplr](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/asdqwex/doplr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
