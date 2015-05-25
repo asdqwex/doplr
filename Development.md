@@ -15,9 +15,9 @@ Jade support: `apm install language-jade`
 ### Dev Support:
 
   - Agile via Waffle: https://waffle.io/asdqwex/doplr
-  - Community Chat via Gitter (TODO)
-  - Tests via CircleCI (TODO)
-  - Coverage via Coveralls (TODO)
+  - Community Chat via Gitter: https://gitter.im/asdqwex/doplr
+  - Tests via CircleCI: https://circleci.com/gh/asdqwex/doplr
+  - Coverage via Coveralls: https://coveralls.io/r/asdqwex/doplr
   - Dep checking via Gemnasium (TODO)
   - Developer site via GitHub pages (TODO)
 
