@@ -1,0 +1,17 @@
+{
+  "ecmaFeatures": {
+    "blockBindings": true,
+    "forOf": true,
+    "modules": true
+  },
+  "rules": {
+    "global-strict": [2, "always"],
+    "max-len": [1, 100, 2],
+    "max-statements": [1, 30],
+    "max-nested-callbacks": [1, 5]
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  }
+}

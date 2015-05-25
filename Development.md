@@ -1,14 +1,21 @@
+User Stories: [![Stories in Ready](https://badge.waffle.io/asdqwex/doplr.svg?label=ready&title=Ready)](https://waffle.io/asdqwex/doplr)
+
 Informal list of techs that will be used to build this project:
 
-# Installing:
+# Development guide
 
+### installing
 You'll want to clone the project, `npm install`, and then `npm link`. `npm link` will link the "doplr" CLI tool to the cloned bin/doplr.js - so that you can test as a normal user would.
+### coding style
+All coding style decisions will be enforced via ESLINT. Make sure you install it in your editor!
+### branching strategy
+TODO
 
 ### Atom
 
 If you're using the ATOM editor (well, any editor really, but i'm only going to provide a guide for atom), you'll want to install a few packages:
 
-Jade support: `apm install language-jade`
+Jade support: `apm install language-jade linter linter-eslint`
 
 # High level:
 
