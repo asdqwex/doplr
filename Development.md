@@ -37,6 +37,7 @@ Jade support: `apm install language-jade`
   - Floom
   - pm2 (for service control)
   - yargs (for CLI optstring processing)
+  - levelDB (for storing forecast data)
 
 ### Test framework:
 

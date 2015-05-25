@@ -20,6 +20,7 @@
   "homepage": "https://github.com/erulabs/doplr#readme",
   "dependencies": {
     "gulp": "^3.8.11",
+    "level": "^1.0.0",
     "yargs": "^3.9.1"
   }
 }

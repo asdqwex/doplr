@@ -7,6 +7,14 @@
 const argv = require('yargs')
   .count('verbose')
   .alias('v', 'verbose')
+  .alias('i', 'sshkey')
+  .alias('u', 'username')
+  .alias('p', 'port')
+  .alias('c', 'config')
+  .alias('f', 'forecast')
+  .default('f', '.')
+  .alias('r', 'radar')
+  .alias('w', 'weathergirl')
   .command('sweep', 'Discover a host, network, or cloud provider')
   .command('radar', 'Controls a local Doplr daemon, allowing for task backgrounding')
   .command('forecast', 'A CLI tool for browsing the forecast data')
@@ -24,6 +32,27 @@ const argv = require('yargs')
 
 // The first non-hypenated option is the "action"
 const chosen_action = argv._[0];
+
+const fs = require('fs');
+const path = require('path');
+
+// Find the nearest .forecast storage, unless one has been specified
+function locateForecast (p) {
+  p = p + '.forecast';
+  if (fs.existsSync()) {
+    return p;
+  } else {
+    p = p.split(path.sep);
+    p.pop();
+    if (p.length > 1) {
+      p.join(path.sep);
+      return locateForecast(p);
+    } else {
+      fs.mkdirSync() ...
+    }
+  }
+}
+const forecast_location = locateForecast(argv.forecast.replace('.forecast', ''));
 
 // If we're gonna queue this message agianst a daemon...
 if (argv.radar) {
