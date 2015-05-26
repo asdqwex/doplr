@@ -22,7 +22,8 @@
   "dependencies": {
     "level": "^1.0.0",
     "pm2": "^0.12.15",
-    "yargs": "^3.9.1"
+    "yargs": "^3.9.1",
+    "koa": "0.21.0"
   },
   "devDependencies": {
     "eslint": "^0.21.2",
