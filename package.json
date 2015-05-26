@@ -4,10 +4,10 @@
   "description": "The infrastructure discovery toolkit",
   "main": "lib/index.js",
   "bin": "bin/doplr.js",
-  "engines": ">= 2.0.2",
+  "engines": ">= 2.1.0",
   "scripts": {
     "test": "env NODE_ENV=test node node_modules/mocha/bin/_mocha --reporter spec",
-    "lint": "eslint bin/doplr.js lib/*.js"
+    "lint": "eslint gulpfile.js bin/doplr.js lib/*.js test/*.js"
   },
   "repository": {
     "type": "git",

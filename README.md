@@ -1,8 +1,6 @@
-# Doplr [![NPM version](https://badge.fury.io/js/doplr.svg)](http://badge.fury.io/js/doplr)
+# Doplr [![Circle CI](https://circleci.com/gh/asdqwex/doplr/tree/master.svg?style=svg)](https://circleci.com/gh/asdqwex/doplr/tree/master) [![Join the chat at https://gitter.im/asdqwex/doplr](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/asdqwex/doplr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ### The infrastructure discovery toolkit
-[![Join the chat at https://gitter.im/asdqwex/doplr](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/asdqwex/doplr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Circle CI](https://circleci.com/gh/asdqwex/doplr/tree/master.svg?style=svg)](https://circleci.com/gh/asdqwex/doplr/tree/master) [![Coverage Status](https://coveralls.io/repos/asdqwex/doplr/badge.svg?branch=master)](https://coveralls.io/r/asdqwex/doplr?branch=master) [![Code Climate](https://codeclimate.com/github/asdqwex/doplr/badges/gpa.svg)](https://codeclimate.com/github/asdqwex/doplr) [![Dependency Status](https://gemnasium.com/asdqwex/doplr.svg)](https://gemnasium.com/asdqwex/doplr)
-
-User Stories: [![Stories in Ready](https://badge.waffle.io/asdqwex/doplr.svg?label=ready&title=Ready)](https://waffle.io/asdqwex/doplr)
+[![Coverage Status](https://coveralls.io/repos/asdqwex/doplr/badge.svg?branch=master)](https://coveralls.io/r/asdqwex/doplr?branch=master) [![Code Climate](https://codeclimate.com/github/asdqwex/doplr/badges/gpa.svg)](https://codeclimate.com/github/asdqwex/doplr) [![Dependency Status](https://gemnasium.com/asdqwex/doplr.svg)](https://gemnasium.com/asdqwex/doplr) [![Stories in Ready](https://badge.waffle.io/asdqwex/doplr.svg?label=ready&title=Ready)](https://waffle.io/asdqwex/doplr)
 
 [![NPM](https://nodei.co/npm/doplr.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/doplr/)
 
@@ -17,6 +15,8 @@ To use the library:
 Composed of several utilities: `sweep` for discovery, `forecast` for visualization, the `radar` daemon for backgrounding these tasks, and `weathergirl` - a web service which allows access to sweep and a graphical look at the `forecast`.
 
 Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier - it has conquered the browser and the server - now it's time to take on infrastructure and operations.
+
+**Doplr requires a very recent io.js**, as of the time of writing that is 2.1.0. This is because many very important security features have been improved massively in recent builds of io.js. Ensure you have the newest version at https://iojs.org
 
 # Sweep
 

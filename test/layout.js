@@ -8,7 +8,6 @@ if (!fs.existsSync("tmp")) {
 }
 
 const doplr = new Doplr({
-  // Locate the nearest .forecast - If none is found, we'll create one where we are
   targetForecast: "tmp/.forecast"
 });
 

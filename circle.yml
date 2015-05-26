@@ -5,4 +5,4 @@ general:
 
 machine:
   node:
-    version: iojs-v2.0.2
+    version: iojs-v2.1.0
