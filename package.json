@@ -1,7 +1,7 @@
 {
   "name": "doplr",
   "version": "0.0.1",
-  "description": "A modern infrastructure discovery, monitoring and automation toolkit",
+  "description": "The infrastructure discovery toolkit",
   "main": "lib/index.js",
   "bin": "bin/doplr.js",
   "engines": ">= 2.0.2",

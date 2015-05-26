@@ -1,5 +1,3 @@
-User Stories: [![Stories in Ready](https://badge.waffle.io/asdqwex/doplr.svg?label=ready&title=Ready)](https://waffle.io/asdqwex/doplr)
-
 Informal list of techs that will be used to build this project:
 
 # Development guide
