@@ -60,8 +60,47 @@ const chosenAction = argv._[0];
 // `doplr radar` is the built-in service controller for a doplr daemon
 if (chosenAction === "radar") {
   // Control process locally
-  LOG.warn(CONSTANTS.UNIMPLIMENTED);
-
+  if (argv._.length === 1) {
+    LOG.warn(CONSTANTS.RADAR_USAGE);
+    process.exit(1);
+  }
+  // Use PM2 for service control - https://github.com/Unitech/PM2
+  const pm2 = require("pm2");
+  const serviceAction = argv._[1];
+  // RADAR START
+  if (serviceAction === "start") {
+    pm2.connect(function (connectErr) {
+      if (connectErr) {
+        throw new Error(connectErr);
+      }
+      pm2.start("bin/radar.js", { name: "doplrRadar" }, function (startErr) {
+        if (startErr) {
+          throw new Error(startErr);
+        }
+        pm2.disconnect(function () {
+          process.exit(0);
+        });
+      });
+    });
+  // RADAR STOP
+  } else if (serviceAction === "stop") {
+    pm2.connect(function (connectErr) {
+      if (connectErr) {
+        throw new Error(connectErr);
+      }
+      pm2.stop("doplrRadar", function (stopErr) {
+        if (stopErr) {
+          throw new Error(stopErr);
+        }
+        pm2.disconnect(function () {
+          process.exit(0);
+        });
+      });
+    });
+  } else {
+    LOG.warn(CONSTANTS.RADAR_USAGE);
+    process.exit(1);
+  }
 // `doplr <action> --radar` implies a user wants to send this task to a radar daemon
 } else if (argv.radar) {
   // Send messages to DAEMONs via HTTP (HTTPS eventually)

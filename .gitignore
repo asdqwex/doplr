@@ -5,3 +5,4 @@ npm-debug.log
 Thumbs.db
 .forecast
 tmp
+.pm2

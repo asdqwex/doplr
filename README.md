@@ -1,4 +1,4 @@
-# Doplr
+# Doplr [![NPM version](https://badge.fury.io/js/doplr.svg)](http://badge.fury.io/js/doplr)
 ### The infrastructure discovery toolkit
 [![Join the chat at https://gitter.im/asdqwex/doplr](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/asdqwex/doplr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Circle CI](https://circleci.com/gh/asdqwex/doplr/tree/master.svg?style=svg)](https://circleci.com/gh/asdqwex/doplr/tree/master) [![Coverage Status](https://coveralls.io/repos/asdqwex/doplr/badge.svg?branch=master)](https://coveralls.io/r/asdqwex/doplr?branch=master) [![Code Climate](https://codeclimate.com/github/asdqwex/doplr/badges/gpa.svg)](https://codeclimate.com/github/asdqwex/doplr) [![Dependency Status](https://gemnasium.com/asdqwex/doplr.svg)](https://gemnasium.com/asdqwex/doplr)
 
@@ -16,17 +16,17 @@ To use the library:
 
 Composed of several utilities: `sweep` for discovery, `forecast` for visualization, the `radar` daemon for backgrounding these tasks, and `weathergirl` - a web service which allows access to sweep and a graphical look at the `forecast`.
 
-Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier. It's conquered the browser and the server - now it's time to take on infrastructure, operations, and monitoring.
+Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier - it has conquered the browser and the server - now it's time to take on infrastructure and operations.
 
 # Sweep
 
-Sweep is doplr's discovery action. It is able to scan a host, a network, and most importantly, a cloud providers API. Doplr's sweeps are powered by _floom_, both for discovering hosts via a cloud providers API, as well as probing hosts themselves via SSH or floom's fireball daemon.
+Sweep is Doplr's discovery action. It is able to scan a host, a network, and most importantly, a cloud providers API. Doplr's sweeps are powered by _floom_, both for discovering hosts via a cloud providers API, as well as probing hosts themselves via SSH or floom's fireball daemon.
 
-Doplr sweep will scan a host and add it to to doplr's "forecast". A forecast what Doplr calls the data which represents what it has seen so far. Doplr will automatically create a .forecast directory, and all sweeps will _append_ to the forecast. It is generally assumed you'd use distinct directories for distinct infrastructures, but Doplr will optimistically search up the directory chain for a .forecast (exactly like git's behavior).
+Doplr sweep will scan a host and add it to to Doplr's "forecast". A forecast what Doplr calls the data which represents what it has seen so far. Doplr will automatically create a .forecast directory, and all sweeps will _append_ to the forecast. It is generally assumed you'd use distinct directories for distinct infrastructures, but Doplr will optimistically search up the directory chain for a .forecast (exactly like git's behavior).
 
     doplr sweep host myserver.com
 
-Assuming you can SSH to myserver.com, doplr will add that host to the "forecast".
+Assuming you can SSH to myserver.com, Doplr will add that host to the "forecast".
 
 Doplr can also sweep entire cloud providers, doing all the hard work for you!
 
@@ -73,7 +73,7 @@ WeatherGirl is able to perform all the other tasks in Doplr. The goal of this in
 
 # Security
 
-By default doplr will simply use the current user to attempt to log into systems. Obviously, this is not typically desired or secure, particularly for a weathergirl server. There are two ways to accomplish this task: Bootstrap a dedicated SSH user, or install a doplr agent on the remote systems.
+By default Doplr will simply use the current user to attempt to log into systems. Obviously, this is not typically desired or secure, particularly for a weathergirl server. There are two ways to accomplish this task: Bootstrap a dedicated SSH user, or install a Doplr agent on the remote systems.
 
     doplr sweep host doplr@myserver.com -i somekey.pem
 
@@ -88,6 +88,6 @@ Under the hood, doplr uses _floom_. Because of this, doplr by default (like floo
 
     doplr sweep ec2 --install-floom-agent
 
-After that, doplr will remember each host which has the agent installed and attempt to communicate via a websocket on port 93105
+After that, Doplr will remember each host which has the agent installed and attempt to communicate via a websocket on port 93105
 
 Remember that all of this can be controlled via WeatherGirl!
