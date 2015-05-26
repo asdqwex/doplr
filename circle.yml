@@ -2,3 +2,7 @@ general:
   branches:
     ignore:
       - gh-pages
+
+machine:
+  node:
+    version: iojs-v2.0.2
