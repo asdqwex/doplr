@@ -6,7 +6,7 @@
   "bin": "bin/doplr.js",
   "engines": ">= 2.0.2",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "env NODE_ENV=test node node_modules/mocha/bin/_mocha --reporter spec",
     "lint": "eslint bin/doplr.js lib/*.js"
   },
   "repository": {
@@ -25,7 +25,9 @@
     "yargs": "^3.9.1"
   },
   "devDependencies": {
+    "eslint": "^0.21.2",
     "gulp": "^3.8.11",
-    "eslint": "^0.21.2"
+    "mocha": "^2.2.5",
+    "should": "^6.0.3"
   }
 }
