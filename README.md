@@ -12,7 +12,7 @@ To use the library:
 
 `npm install --save doplr`
 
-Composed of several utilities: `sweep` for discovery, `forecast` for visualization, the `radar` daemon for backgrounding these tasks, and `weathergirl` - a web service which allows access to sweep and a graphical look at the `forecast`.
+Composed of several utilities: `sweep` for discovery, `forecast` for visualization and `radar` - a web service which allows access to a graphical look at the `forecast` as well as a powerful API for queuing sweeps and accessing the forecast data.
 
 Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier - it has conquered the browser and the server - now it's time to take on infrastructure and operations.
 
@@ -40,12 +40,6 @@ To sweep the entire forecast (all known elements in the infrastructure):
 
 Note that while sweeps can take a **long time**. By default Doplr's agent will not observe the host longer than it needs to (in the case of information collection, this is configurable via `--observefor NUM_SECONDS`, and defaults to 15 seconds). On production hosts, 15 seconds is typically more than enough time to gather meaningful date.
 
-# Radar
-
-Radar provides the ability to background and schedule sweeps via creating a daemon with an HTTP interface.
-
-`doplr radar start` starts the daemon. Conversely, `doplr radar stop` and `doplr radar status` work as expected. Additionally, for automation purposes, `doplr radar status` will exit with a status of 0 when the service is running and 1 when it is not. Once backgrounded, sweeps can be sent to the background process: `doplr sweep ... --radar`. You can also queue a sweep of the entire known forecast with `doplr sweep --all --radar`.
-
 ## Scheduling
 
 You can very easily schedule sweeps with the cron system using the commands above. However, you can also: `doplr sweep --all --radar --every 5m`
@@ -59,19 +53,31 @@ Doplr will report on its findings and give a summary of the state of the infrast
 
 # WeatherGirl
 
-WeatherGirl is a pretty web interface which can browse the forecast and schedule and run sweeps.
+WeatherGirl is a pretty web interface which can browse the forecast and schedule and run sweeps. Doplr's Radar will host it, if you enable the --weathergirl flag
 
-    doplr weathergirl [--radar] [--weathergirl-port=90210]
+    doplr radar --weathergirl
 
-Doplr will host WeatherGirl on port 90210. --radar will have the daemon host it. Conversely, you can start radar with WeatherGirl enabled to start with something like:
+You can also:
 
-    doplr radar start --weathergirl [options]
+    doplr weathergirl
 
-WeatherGirl is able to perform all the other tasks in Doplr. The goal of this interface is to expose all major features of the doplr suite via a slick web UI. WeatherGirls end game goal would be to compete with Ubuntu's JuJu and entirely replace Graphite/Grafana.
+WeatherGirl is able to perform all the other tasks in Doplr. The goal of this interface is to expose all major features of the doplr suite via a slick web UI. For most work stations doing simple discovery, `doplr weathergirl &` is typically a good bet.
+
+# Radar
+
+Radar provides the ability to background and schedule sweeps via an HTTP interface.
+
+**Note**: WeatherGirl requires Radar. Radar does not provide WeatherGirl by default.
+
+By default "doplr radar" is quite boring on the CLI. It would much more typically be run via something like "pm2" or simply automatically run by something like Chef or Floom and put behind something like Nginx for authentication.
+
+If you'd like to automate, you can use the helper script in `bin`:
+
+    WEATHERGIRL=true pm2 start bin/radar.js
 
 # Security
 
-By default Doplr will simply use the current user to attempt to log into systems. Obviously, this is not typically desired or secure, particularly for a weathergirl server. There are two ways to accomplish this task: Bootstrap a dedicated SSH user, or install a Doplr agent on the remote systems.
+By default Doplr will simply use the current user to attempt to log into systems. Obviously, this is not typically desired or secure, particularly for a Radar server. There are two ways to accomplish this task: Bootstrap a dedicated SSH user, or install a Doplr agent on the remote systems.
 
     doplr sweep host doplr@myserver.com -i somekey.pem
 

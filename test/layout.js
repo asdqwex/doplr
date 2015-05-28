@@ -28,9 +28,9 @@ describe("doplr", function () {
       doplr.Sweep.should.be.type("function");
     });
   });
-  describe("weathergirl", function () {
+  describe("radar", function () {
     it("should be a function", function () {
-      doplr.WeatherGirl.should.be.type("function");
+      doplr.Radar.should.be.type("function");
     });
   });
 

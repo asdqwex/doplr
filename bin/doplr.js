@@ -21,13 +21,10 @@ const yargs = require("yargs")
   .alias("f", "forecast")
   .default("f", ".")
   .alias("r", "radar")
-  .default("forecast-port", CONSTANTS.DEFAULT_FORECASTPORT)
-  .alias("w", "weathergirl-port")
-  .default("w", CONSTANTS.DEFAULT_WEATHERGIRLPORT)
+  .default("radar-port", CONSTANTS.DEFAULT_RADARPORT)
   .command("sweep", "Discover a host, network, or cloud provider")
   .command("forecast", "A CLI tool for browsing the forecast data")
-  .command("radar", "Controls a local Doplr daemon, allowing for task backgrounding")
-  .command("weathergirl", "Launches a web interface for Doplr")
+  .command("radar", "Run Doplr as a server")
   .example("doplr sweep myhost.com", "gather information about myhost.com and add to forecast")
   .example("doplr forecast myhost.com", "display known facts about myhost.com")
   .example("doplr radar start", "start the doplr daemon")
@@ -42,7 +39,7 @@ const argv = yargs.argv;
 const log = require("./../lib/logger")(argv);
 
 if (argv._.length === 0) {
-  console.log(yargs.help());
+  log(yargs.help());
   process.exit(1);
 }
 
@@ -60,56 +57,8 @@ function locateForecast (p) {
   return false;
 }
 
-// The first non-hypenated option is the "action"
-const chosenAction = argv._[0];
-
-// `doplr radar` is the built-in service controller for a doplr daemon
-if (chosenAction === "radar") {
-  // Control process locally
-  if (argv._.length === 1) {
-    log(CONSTANTS.RADAR_USAGE);
-    process.exit(1);
-  }
-  // Use PM2 for service control - https://github.com/Unitech/PM2
-  const pm2 = require("pm2");
-  const serviceAction = argv._[1];
-  // RADAR START
-  if (serviceAction === "start") {
-    pm2.connect(function (connectErr) {
-      if (connectErr) {
-        throw new Error(connectErr);
-      }
-      pm2.start("bin/radar.js", { name: "doplrRadar" }, function (startErr) {
-        if (startErr) {
-          throw new Error(startErr);
-        }
-        pm2.disconnect(function () {
-          process.exit(0);
-        });
-      });
-    });
-  // RADAR STOP
-  } else if (serviceAction === "stop") {
-    pm2.connect(function (connectErr) {
-      if (connectErr) {
-        throw new Error(connectErr);
-      }
-      pm2.stop("doplrRadar", function (stopErr) {
-        if (stopErr) {
-          throw new Error(stopErr);
-        }
-        pm2.disconnect(function () {
-          process.exit(0);
-        });
-      });
-    });
-  } else {
-    log(CONSTANTS.RADAR_USAGE);
-    process.exit(1);
-  }
 // `doplr <action> --radar` implies a user wants to send this task to a radar daemon
-} else if (argv.radar) {
-
+if (argv.radar) {
   let radarUri = argv.radar;
   if (typeof radarUri !== "string") {
     radarUri = CONSTANTS.DEFAULT_RADARURI;
@@ -119,8 +68,20 @@ if (chosenAction === "radar") {
   // POST /chosenAction { data: options } ...
   log(CONSTANTS.UNIMPLIMENTED);
 
-// Run directly on this thread
+// Otherwise, they want to run things, not sent messages to a radar
 } else {
+
+  // The first non-hypenated option is the "action"
+  const chosenAction = argv._[0];
+
+  // Convert the CLI options into a URI
+  // This implies 'doplr sweep host erulabs.com'
+  // becomes '/sweep/host/erulabs.com'
+  // Because we're passing directly to the Sweep class,
+  // we don't actually need to prepend the URI with /sweep/...
+  argv._.shift();
+  const targetUri = "/" + argv._.join("/");
+
   // Create a Doplr instance
   const doplr = new Doplr({
     // Locate the nearest .forecast - If none is found, we'll create one where we are
@@ -132,16 +93,32 @@ if (chosenAction === "radar") {
   });
   log.info(`Forecast directory: ${doplr.forecastPath}`);
 
-  // Convert the CLI options into a URI
-  // This implies 'doplr sweep host erulabs.com'
-  // becomes '/sweep/host/erulabs.com'
-  // Because we're passing directly to the Sweep class,
-  // we don't actually need to prepend the URI with /sweep/...
-  argv._.shift();
-  const targetUri = argv._.join("/");
+  // `doplr radar [--weathergirl]` Launch the API with or without the interface
+  if (chosenAction === "radar" ||
+      chosenAction === "r" ||
+      chosenAction === "weathergirl" ||
+      chosenAction === "w") {
+    let weathergirl = false;
+    if (chosenAction === "weathergirl" ||
+        chosenAction === "w" ||
+        argv.weathergirl) {
+      weathergirl = true;
+    }
+    const radar = new doplr.Radar({
+      weathergirl: weathergirl
+    });
+    radar.listen(argv["radar-port"]);
+
+    // Pop the browser if we're hosting weathergirl
+    if (weathergirl && !argv.silent && typeof argv["radar-port"] === "number") {
+      setTimeout(function () {
+        const open = require("open");
+        open("http://localhost:" + argv["radar-port"]);
+      }, 100);
+    }
 
   // `doplr sweep <type> <target> [options]`
-  if (chosenAction === "sweep" ||
+  } else if (chosenAction === "sweep" ||
       chosenAction === "scan" ||
       chosenAction === "s" ||
       chosenAction === "sw") {
@@ -159,19 +136,8 @@ if (chosenAction === "radar") {
     });
     forecast.report();
 
-  // `doplr weathergirl`
-  } else if (chosenAction === "weathergirl" ||
-             chosenAction === "w") {
-    const weathergirl = new doplr.WeatherGirl({});
-    weathergirl.listen(argv["weathergirl-port"]);
-    // Pop the browser
-    if (!argv.silent && typeof argv["weathergirl-port"] !== "string") {
-      setTimeout(function () {
-        const open = require("open");
-        open("http://localhost:" + argv["weathergirl-port"]);
-      }, 100);
-    }
   } else {
     log(`No such action "${chosenAction}"`);
+    log(yargs.help());
   }
 }
