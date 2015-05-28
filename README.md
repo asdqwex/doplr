@@ -12,7 +12,7 @@ To use the library:
 
 `npm install --save doplr`
 
-Composed of several utilities: `sweep` for discovery, `forecast` for visualization and `radar` - a web service which allows access to a graphical look at the `forecast` (which we call WeatherGirl) as well as a powerful API for queuing sweeps and accessing the forecast data.
+Composed of several utilities: `sweep` for discovery, `forecast` for visualization and `radar` - an HTTP API for queuing sweeps and accessing the forecast data as well as a graphical look at the `forecast` (which we call WeatherGirl).
 
 Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier - it has conquered the browser and the server - now it's time to take on infrastructure and operations.
 
