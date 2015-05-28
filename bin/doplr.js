@@ -53,7 +53,6 @@ const yargs = require("yargs")
   .epilog("Visit https://github.com/asdqwex/doplr for more information!");
 
 const argv = yargs.argv;
-
 const log = require("./../lib/logger")(argv);
 
 if (argv._.length === 0) {
@@ -75,6 +74,17 @@ function locateForecast (p) {
   return false;
 }
 
+// The first non-hypenated option is the "action"
+const chosenAction = argv._[0];
+
+// Convert the CLI options into a URI
+// This implies 'doplr sweep host erulabs.com'
+// becomes '/sweep/host/erulabs.com'
+// Because we're passing directly to the Sweep class,
+// we don't actually need to prepend the URI with /sweep/...
+argv._.shift();
+const targetUri = "/" + argv._.join("/");
+
 // `doplr <action> --radar` implies a user wants to send this task to a radar daemon
 if (argv.radar) {
   let radarUri = argv.radar;
@@ -83,22 +93,10 @@ if (argv.radar) {
   }
   // Send messages to DAEMONs via HTTP (HTTPS eventually)
   //const http = require("http");
-  // POST /chosenAction { data: options } ...
+  // POST /targetUri { data: options } ...
   log(CONSTANTS.UNIMPLIMENTED);
 
-// Otherwise, they want to run things, not sent messages to a radar
 } else {
-
-  // The first non-hypenated option is the "action"
-  const chosenAction = argv._[0];
-
-  // Convert the CLI options into a URI
-  // This implies 'doplr sweep host erulabs.com'
-  // becomes '/sweep/host/erulabs.com'
-  // Because we're passing directly to the Sweep class,
-  // we don't actually need to prepend the URI with /sweep/...
-  argv._.shift();
-  const targetUri = "/" + argv._.join("/");
 
   // Create a Doplr instance
   const doplr = new Doplr({
@@ -131,7 +129,6 @@ if (argv.radar) {
 
   // `doplr sweep <type> <target> [options]`
   } else if (["s", "sw", "swe", "swee", "sweep"].indexOf(chosenAction) > -1) {
-
     const sweep = new doplr.Sweep({
       targetUri: targetUri
     });
