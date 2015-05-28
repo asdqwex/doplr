@@ -38,7 +38,7 @@ To sweep the entire forecast (all known elements in the infrastructure):
 
     doplr sweep
 
-Note that while sweeps can take a **long time**.
+Note that sweeps can take a **long time**. Consider using a dedicated Doplr Radar server!
 
 # Forecast
 
