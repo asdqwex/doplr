@@ -12,7 +12,7 @@ To use the library:
 
 `npm install --save doplr`
 
-Composed of several utilities: `sweep` for discovery, `forecast` for visualization and `radar` - an HTTP API for queuing sweeps and accessing the forecast data as well as a graphical look at the `forecast` (which we call WeatherGirl).
+Composed of several utilities: `sweep` for discovery, `forecast` for visualization and `radar` - an HTTP API for queuing sweeps and accessing the forecast data as well as a graphical look at the `forecast`.
 
 Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier - it has conquered the browser and the server - now it's time to take on infrastructure and operations.
 
@@ -26,26 +26,19 @@ Sweep is Doplr's discovery action. It is able to discover hosts, networks, and m
 
     doplr sweep host myserver.com
 
-Assuming you can SSH to myserver.com, Doplr will add that host to the "forecast".
+Assuming you can SSH to myserver.com, Doplr will add that host to the "forecast". Even if you can't, doplr will collect information based on the plugins configured.
 
 Doplr can also sweep entire cloud providers, doing all the hard work for you!
 
     doplr sweep aws AWS_SECRET_ID AWS_SECRET_KEY
 
-We aim to support sweeping AWS, Google Cloud, Azure and OpenStack. Assuming you're sweeping a cloud, you don't need to deal with any other details or upkeep. If you're manually sweeping hosts, you might sometimes need to:
-
-    doplr sweep host myserver.com --delete
+We aim to support sweeping AWS, Google Cloud, Azure and OpenStack.
 
 To sweep the entire forecast (all known elements in the infrastructure):
 
-    doplr sweep --all
+    doplr sweep
 
-Note that while sweeps can take a **long time**. By default Doplr's agent will not observe the host longer than it needs to (in the case of information collection, this is configurable via `--observefor NUM_SECONDS`, and defaults to 15 seconds). On production hosts, 15 seconds is typically more than enough time to gather meaningful date.
-
-## Scheduling
-
-You can very easily schedule sweeps with the cron system using the commands above. However, you can also: `doplr sweep --all --radar --every 5m`
-There will also be a config file that can be edited directly to tune these settings.
+Note that while sweeps can take a **long time**.
 
 # Forecast
 
@@ -55,27 +48,30 @@ Doplr will report on its findings and give a summary of the state of the infrast
 
 # Radar
 
-Radar provides the ability to background and schedule sweeps via an HTTP interface.
+    doplr radar
 
-**Note**: Radar does not provide the web interface, WeatherGirl, by default. Use `--weathergirl` or see below.
+Radar provides the ability to background and schedule sweeps via an HTTP interface. It also has a pretty web interface which you can access at http://localhost:9040 by default.
 
-By default "doplr radar" is quite boring on the CLI. It would much more typically be run via something like "pm2" or simply automatically run by something like Chef or Floom and put behind something like Nginx for authentication.
+You can also target a remote radar service with the `--radar` flag on any other operation. For example:
 
-If you'd like to automate, you can use the helper script in `bin`:
+    doplr sweep --radar=radar.mystartup.com
 
-    WEATHERGIRL=true pm2 start bin/radar.js
+# Library
+
+    npm install doplr
+
+Now you can create your own Radar service, among other things:
+
+```javascript
+const LibDoplr = require("doplr");
+const doplr = new LibDoplr();
+const radar = new doplr.Radar();
+radar.listen(9040);
+```
 
 # WeatherGirl
 
-WeatherGirl is a pretty web interface which can browse the forecast and schedule and run sweeps. Doplr's Radar will host it, if you enable the --weathergirl flag
-
-    doplr radar --weathergirl
-
-You can also:
-
-    doplr weathergirl
-
-WeatherGirl is able to perform all the other tasks in Doplr. The goal of this interface is to expose all major features of the doplr suite via a slick web UI. For most work stations doing simple discovery, `doplr weathergirl &` is typically a good bet.
+WeatherGirl is a pretty web interface which can browse the forecast and schedule and run sweeps. Doplr's Radar will host it for you automatically. The goal of this interface is to expose all major features of the doplr suite via a slick web UI.
 
 # Security
 

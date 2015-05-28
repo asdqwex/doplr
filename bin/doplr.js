@@ -12,27 +12,45 @@ const path = require("path");
 
 // https://github.com/bcoe/yargs
 const yargs = require("yargs")
+  .usage("Usage: $0 <command> [options]")
   .count("verbose")
   .alias("v", "verbose")
+  .describe("v", "verbosity, use twice for debug mode")
   .alias("i", "ssh-key")
+  .describe("i", "ssh private key path")
   .alias("u", "ssh-username")
+  .describe("u", "ssh username")
+  .default("u", process.env.USER)
   .alias("p", "ssh-port")
+  .default("p", 22)
+  .describe("p", "ssh port")
   .alias("c", "config")
-  .alias("f", "forecast")
+  .describe("c", "load configuration options from a .json file")
+  .alias("f", "forecast-path")
   .default("f", ".")
-  .alias("r", "radar")
+  .describe("f", "use a specific forecast directory")
+  .describe("s", "be silent")
+  .alias("s", "silence")
+  .default("s", false)
+  .alias("P", "radar-port")
   .default("radar-port", CONSTANTS.DEFAULT_RADARPORT)
+  .describe("radar-port", "the port Doplr's API will bind to")
+  .alias("r", "radar")
+  .describe("radar", "target a remote radar")
+  .describe("no-weathergirl", "disable the web interface")
   .command("sweep", "Discover a host, network, or cloud provider")
   .command("forecast", "A CLI tool for browsing the forecast data")
   .command("radar", "Run Doplr as a server")
-  .example("doplr sweep myhost.com", "gather information about myhost.com and add to forecast")
-  .example("doplr forecast myhost.com", "display known facts about myhost.com")
-  .example("doplr radar start", "start the doplr daemon")
-  .example("doplr sweep --all --radar", "have the daemon sweep all known infrastructure")
-  .example("doplr radar start --weathergirl", "start a daemon which will host the web interface")
-  .example("doplr weathergirl --radar", "have the running radar daemon start weathergirl")
+  .example("doplr sweep", "sweep all known infrastructure")
+  .example("doplr sweep host foo.com", "gather info about foo.com")
+  .example("doplr forecast", "display overview")
+  .example("doplr forecast host foo.com", "display info about foo.com")
+  .example("doplr radar", "launch the web interface")
+  .example("doplr <command> --radar=radar.foo.com", "Run against a remote radar")
+  .example("node ./bin/radar.js", "run your own radar server")
   .help("h")
-  .epilog("Created by Seandon \"erulabs\" Mooy and Matthew \"asdqwex\" Ellsworth");
+  .alias("h", "help")
+  .epilog("Visit https://github.com/asdqwex/doplr for more information!");
 
 const argv = yargs.argv;
 
@@ -86,31 +104,25 @@ if (argv.radar) {
   const doplr = new Doplr({
     // Locate the nearest .forecast - If none is found, we'll create one where we are
     targetForecast: locateForecast(
-        path.resolve(argv.forecast.replace(CONSTANTS.DEFAULT_FORECAST_DIRECTORY, ""))
+        path.resolve(argv["forecast-path"].replace(CONSTANTS.DEFAULT_FORECAST_DIRECTORY, ""))
       ) || CONSTANTS.DEFAULT_FORECAST_DIRECTORY,
     verbose: argv.verbose,
     silent: argv.silent
   });
   log.info(`Forecast directory: ${doplr.forecastPath}`);
 
-  // `doplr radar [--weathergirl]` Launch the API with or without the interface
-  if (chosenAction === "radar" ||
-      chosenAction === "r" ||
-      chosenAction === "weathergirl" ||
-      chosenAction === "w") {
-    let weathergirl = false;
-    if (chosenAction === "weathergirl" ||
-        chosenAction === "w" ||
-        argv.weathergirl) {
-      weathergirl = true;
-    }
+  // `doplr radar` Launch the API
+  if (["r", "ra", "rad", "rada", "radar"].indexOf(chosenAction) > -1) {
     const radar = new doplr.Radar({
-      weathergirl: weathergirl
+      weathergirl: !argv["no-weathergirl"]
     });
     radar.listen(argv["radar-port"]);
 
     // Pop the browser if we're hosting weathergirl
-    if (weathergirl && !argv.silent && typeof argv["radar-port"] === "number") {
+    if (!argv["no-weathergirl"] &&
+    !argv.silent && // And we're not silent
+    typeof argv["radar-port"] === "number" && // And radar is listening on a TCP port
+    process.platform !== "linux") { // And we're not on linux (shrug)
       setTimeout(function () {
         const open = require("open");
         open("http://localhost:" + argv["radar-port"]);
@@ -118,10 +130,7 @@ if (argv.radar) {
     }
 
   // `doplr sweep <type> <target> [options]`
-  } else if (chosenAction === "sweep" ||
-      chosenAction === "scan" ||
-      chosenAction === "s" ||
-      chosenAction === "sw") {
+  } else if (["s", "sw", "swe", "swee", "sweep"].indexOf(chosenAction) > -1) {
 
     const sweep = new doplr.Sweep({
       targetUri: targetUri
@@ -129,15 +138,14 @@ if (argv.radar) {
     sweep.begin();
 
   // `doplr forecast <categoryOrKeyword> [options]`
-  } else if (chosenAction === "forecast" ||
-             chosenAction === "f") {
+  } else if (["f", "fo", "for", "fore", "forec",
+              "foreca", "forecas", "forecast"].indexOf(chosenAction) > -1) {
     const forecast = new doplr.Forecast({
       targetUri: targetUri
     });
     forecast.report();
 
   } else {
-    log(`No such action "${chosenAction}"`);
-    log(yargs.help());
+    log(`No such action "${chosenAction}"\n\n`, yargs.help());
   }
 }
