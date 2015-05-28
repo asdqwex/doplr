@@ -12,15 +12,17 @@ To use the library:
 
 `npm install --save doplr`
 
-Composed of several utilities: `sweep` for discovery, `forecast` for visualization and `radar` - a web service which allows access to a graphical look at the `forecast` as well as a powerful API for queuing sweeps and accessing the forecast data.
+Composed of several utilities: `sweep` for discovery, `forecast` for visualization and `radar` - a web service which allows access to a graphical look at the `forecast` (which we call WeatherGirl) as well as a powerful API for queuing sweeps and accessing the forecast data.
 
 Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier - it has conquered the browser and the server - now it's time to take on infrastructure and operations.
+
+## The Forecast
+
+Information Doplr discovers is added to the **forecast**. A forecast is what Doplr calls the information it has collected so far. Running Doplr sweep will automatically create a .forecast directory, and all subsequent sweeps in that directory or any subdirectory will _append_ to that forecast. It is generally assumed you'd use distinct directories for distinct infrastructures (think git repositories). Like git, Doplr will search up the directory chain for a .forecast (exactly like git's behavior).
 
 # Sweep
 
 Sweep is Doplr's discovery action. It is able to discover hosts, networks, and most importantly, cloud provider APIs. Doplr's sweeps are powered by _floom_, both for discovering hosts via a cloud providers API, as well as probing hosts themselves via SSH or floom's fireball daemon.
-
-Information Doplr discovers is added to the **forecast**. A forecast is what Doplr calls the information it has collected so far. Running Doplr sweep will automatically create a .forecast directory, and all subsequent sweeps in that directory or any subdirectory will _append_ to that forecast. It is generally assumed you'd use distinct directories for distinct infrastructures (think git repositories). Like git, Doplr will search up the directory chain for a .forecast (exactly like git's behavior).
 
     doplr sweep host myserver.com
 
@@ -51,6 +53,18 @@ There will also be a config file that can be edited directly to tune these setti
 
 Doplr will report on its findings and give a summary of the state of the infrastructure as currently reported in the forecast file. Note that this action does not do a sweep! It simply generates reports from the current .forecast. Doplr forecast can be run in verbose mode: `doplr forecast -v` or you can specifically ask about a particular host or device: `doplr forecast myserver.com`.
 
+# Radar
+
+Radar provides the ability to background and schedule sweeps via an HTTP interface.
+
+**Note**: Radar does not provide the web interface, WeatherGirl, by default. Use `--weathergirl` or see below.
+
+By default "doplr radar" is quite boring on the CLI. It would much more typically be run via something like "pm2" or simply automatically run by something like Chef or Floom and put behind something like Nginx for authentication.
+
+If you'd like to automate, you can use the helper script in `bin`:
+
+    WEATHERGIRL=true pm2 start bin/radar.js
+
 # WeatherGirl
 
 WeatherGirl is a pretty web interface which can browse the forecast and schedule and run sweeps. Doplr's Radar will host it, if you enable the --weathergirl flag
@@ -62,18 +76,6 @@ You can also:
     doplr weathergirl
 
 WeatherGirl is able to perform all the other tasks in Doplr. The goal of this interface is to expose all major features of the doplr suite via a slick web UI. For most work stations doing simple discovery, `doplr weathergirl &` is typically a good bet.
-
-# Radar
-
-Radar provides the ability to background and schedule sweeps via an HTTP interface.
-
-**Note**: WeatherGirl requires Radar. Radar does not provide WeatherGirl by default.
-
-By default "doplr radar" is quite boring on the CLI. It would much more typically be run via something like "pm2" or simply automatically run by something like Chef or Floom and put behind something like Nginx for authentication.
-
-If you'd like to automate, you can use the helper script in `bin`:
-
-    WEATHERGIRL=true pm2 start bin/radar.js
 
 # Security
 
