@@ -11,7 +11,7 @@ const fs = require("fs");
 const path = require("path");
 
 // https://github.com/bcoe/yargs
-const argv = require("yargs")
+const yargs = require("yargs")
   .count("verbose")
   .alias("v", "verbose")
   .alias("i", "ssh-key")
@@ -21,12 +21,13 @@ const argv = require("yargs")
   .alias("f", "forecast")
   .default("f", ".")
   .alias("r", "radar")
+  .default("forecast-port", CONSTANTS.DEFAULT_FORECASTPORT)
   .alias("w", "weathergirl-port")
+  .default("w", CONSTANTS.DEFAULT_WEATHERGIRLPORT)
   .command("sweep", "Discover a host, network, or cloud provider")
   .command("forecast", "A CLI tool for browsing the forecast data")
   .command("radar", "Controls a local Doplr daemon, allowing for task backgrounding")
   .command("weathergirl", "Launches a web interface for Doplr")
-  .demand(1)
   .example("doplr sweep myhost.com", "gather information about myhost.com and add to forecast")
   .example("doplr forecast myhost.com", "display known facts about myhost.com")
   .example("doplr radar start", "start the doplr daemon")
@@ -34,22 +35,27 @@ const argv = require("yargs")
   .example("doplr radar start --weathergirl", "start a daemon which will host the web interface")
   .example("doplr weathergirl --radar", "have the running radar daemon start weathergirl")
   .help("h")
-  .epilog("Created by Seandon \"erulabs\" Mooy and Matthew \"asdqwex\" Ellsworth")
-  .argv;
+  .epilog("Created by Seandon \"erulabs\" Mooy and Matthew \"asdqwex\" Ellsworth");
+
+const argv = yargs.argv;
 
 const LOG = require("./../lib/logger")(argv);
 
+if (argv._.length === 0) {
+  console.log(yargs.help());
+  process.exit(1);
+}
+
 // Finds the nearest .forecast storage, unless one has been specified
 function locateForecast (p) {
-  const fp = p + path.sep + CONSTANTS.FORECAST_DIRECTORY;
+  const fp = p + path.sep + CONSTANTS.DEFAULT_FORECAST_DIRECTORY;
   if (fs.existsSync(fp)) {
     return fp;
   }
   p = p.split(path.sep);
   p.pop();
   if (p.length > 0) {
-    p = p.join(path.sep);
-    return locateForecast(p);
+    return locateForecast(p.join(path.sep));
   }
   return false;
 }
@@ -103,6 +109,11 @@ if (chosenAction === "radar") {
   }
 // `doplr <action> --radar` implies a user wants to send this task to a radar daemon
 } else if (argv.radar) {
+
+  let radarUri = argv.radar;
+  if (typeof radarUri !== "string") {
+    radarUri = CONSTANTS.DEFAULT_RADARURI;
+  }
   // Send messages to DAEMONs via HTTP (HTTPS eventually)
   //const http = require("http");
   // POST /chosenAction { data: options } ...
@@ -114,28 +125,43 @@ if (chosenAction === "radar") {
   const doplr = new Doplr({
     // Locate the nearest .forecast - If none is found, we'll create one where we are
     targetForecast: locateForecast(
-        path.resolve(argv.forecast.replace(CONSTANTS.FORECAST_DIRECTORY, ""))
-      ) || CONSTANTS.FORECAST_DIRECTORY,
-    // Pass along verbosity value
+        path.resolve(argv.forecast.replace(CONSTANTS.DEFAULT_FORECAST_DIRECTORY, ""))
+      ) || CONSTANTS.DEFAULT_FORECAST_DIRECTORY,
     verbose: argv.verbose
   });
   LOG.info(`Forecast directory: ${doplr.forecastPath}`);
 
-  // Explicitly deal with actions here
-  if (chosenAction === "sweep") {
+  // Convert the CLI options into a URI
+  // This implies 'doplr sweep host erulabs.com'
+  // becomes '/sweep/host/erulabs.com'
+  // Because we're passing directly to the Sweep class,
+  // we don't actually need to prepend the URI with /sweep/...
+  argv._.shift();
+  const targetUri = argv._.join("/");
+
+  // `doplr sweep <type> <target> [options]`
+  if (chosenAction === "sweep" ||
+      chosenAction === "scan" ||
+      chosenAction === "s" ||
+      chosenAction === "sw") {
+
     const sweep = new doplr.Sweep({
-      host: argv.host
+      targetUri: targetUri
     });
     sweep.begin();
 
-  } else if (chosenAction === "forecast") {
+  // `doplr forecast <categoryOrKeyword> [options]`
+  } else if (chosenAction === "forecast" ||
+             chosenAction === "f") {
     const forecast = new doplr.Forecast({
-      host: argv.host
+      targetUri: targetUri
     });
     forecast.report();
 
-  } else if (chosenAction === "weathergirl") {
-    const weathergirl = new doplr.WeatherGirl();
+  // `doplr weathergirl`
+  } else if (chosenAction === "weathergirl" ||
+             chosenAction === "w") {
+    const weathergirl = new doplr.WeatherGirl({});
     weathergirl.listen(argv["weathergirl-port"]);
 
   } else {
