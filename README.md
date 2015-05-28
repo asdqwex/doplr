@@ -1,8 +1,6 @@
 # Doplr [![Circle CI](https://circleci.com/gh/asdqwex/doplr/tree/master.svg?style=svg)](https://circleci.com/gh/asdqwex/doplr/tree/master) [![Join the chat at https://gitter.im/asdqwex/doplr](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/asdqwex/doplr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ### The infrastructure discovery toolkit
-[![Coverage Status](https://coveralls.io/repos/asdqwex/doplr/badge.svg?branch=master)](https://coveralls.io/r/asdqwex/doplr?branch=master) [![Code Climate](https://codeclimate.com/github/asdqwex/doplr/badges/gpa.svg)](https://codeclimate.com/github/asdqwex/doplr) [![Dependency Status](https://gemnasium.com/asdqwex/doplr.svg)](https://gemnasium.com/asdqwex/doplr) [![Stories in Ready](https://badge.waffle.io/asdqwex/doplr.svg?label=ready&title=Ready)](https://waffle.io/asdqwex/doplr)
-
-[![NPM](https://nodei.co/npm/doplr.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/doplr/)
+[![Code Climate](https://codeclimate.com/github/asdqwex/doplr/badges/gpa.svg)](https://codeclimate.com/github/asdqwex/doplr) [![Dependency Status](https://gemnasium.com/asdqwex/doplr.svg)](https://gemnasium.com/asdqwex/doplr) [![Stories in Ready](https://badge.waffle.io/asdqwex/doplr.svg?label=ready&title=Ready)](https://waffle.io/asdqwex/doplr)
 
 **Doplr is written in ES6**, and as such requires a very up-to-date release of Node - Ensure you have the latest release at https://iojs.org
 
