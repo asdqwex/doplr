@@ -4,6 +4,8 @@
 
 [![NPM](https://nodei.co/npm/doplr.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/doplr/)
 
+**Doplr is written in ES6**, and as such requires a very up-to-date release of Node - Ensure you have the latest release at https://iojs.org
+
 To use the CLI tool:
 
 `sudo npm install -g doplr`
@@ -16,13 +18,11 @@ Composed of several utilities: `sweep` for discovery, `forecast` for visualizati
 
 Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier - it has conquered the browser and the server - now it's time to take on infrastructure and operations.
 
-**Doplr requires a very recent io.js**, as of the time of writing that is 2.1.0. This is because many very important security features have been improved massively in recent builds of io.js. Ensure you have the newest version at https://iojs.org
-
 # Sweep
 
-Sweep is Doplr's discovery action. It is able to scan a host, a network, and most importantly, a cloud providers API. Doplr's sweeps are powered by _floom_, both for discovering hosts via a cloud providers API, as well as probing hosts themselves via SSH or floom's fireball daemon.
+Sweep is Doplr's discovery action. It is able to discover hosts, networks, and most importantly, cloud provider APIs. Doplr's sweeps are powered by _floom_, both for discovering hosts via a cloud providers API, as well as probing hosts themselves via SSH or floom's fireball daemon.
 
-Doplr sweep will scan a host and add it to to Doplr's "forecast". A forecast what Doplr calls the data which represents what it has seen so far. Doplr will automatically create a .forecast directory, and all sweeps will _append_ to the forecast. It is generally assumed you'd use distinct directories for distinct infrastructures, but Doplr will optimistically search up the directory chain for a .forecast (exactly like git's behavior).
+Information Doplr discovers is added to the **forecast**. A forecast is what Doplr calls the information it has collected so far. Running Doplr sweep will automatically create a .forecast directory, and all subsequent sweeps in that directory or any subdirectory will _append_ to that forecast. It is generally assumed you'd use distinct directories for distinct infrastructures (think git repositories). Like git, Doplr will search up the directory chain for a .forecast (exactly like git's behavior).
 
     doplr sweep host myserver.com
 
@@ -36,11 +36,11 @@ We aim to support sweeping AWS, Google Cloud, Azure and OpenStack. Assuming you'
 
     doplr sweep host myserver.com --delete
 
-To scan the entire forecast (all known elements in the infrastructure):
+To sweep the entire forecast (all known elements in the infrastructure):
 
     doplr sweep --all
 
-Note that while mass sweeps are parrellized as much as possible, they can still take a _long time_. By default Doplr's agent will not observe the host longer than it needs to (in the case of information collection, this is configurable via `--observefor NUM_SECONDS`, and defaults to 15 seconds). On production hosts, 15 seconds is typically more than enough time to gather meaningful date. Because sweeping often for brief periods of time is typically the best strategy, Doplr can easily be run in daemon mode:
+Note that while sweeps can take a **long time**. By default Doplr's agent will not observe the host longer than it needs to (in the case of information collection, this is configurable via `--observefor NUM_SECONDS`, and defaults to 15 seconds). On production hosts, 15 seconds is typically more than enough time to gather meaningful date.
 
 # Radar
 
