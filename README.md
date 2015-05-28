@@ -63,11 +63,11 @@ Doplr will report on its findings and give a summary of the state of the infrast
 
 WeatherGirl is a pretty web interface which can browse the forecast and schedule and run sweeps.
 
-    doplr weathergirl [--radar] [--port=90404]
+    doplr weathergirl [--radar] [--weathergirl-port=90210]
 
-Doplr will host WeatherGirl on port 90404. --radar will have the daemon host it. Conversely, you can start radar with WeatherGirl enabled to start with something like:
+Doplr will host WeatherGirl on port 90210. --radar will have the daemon host it. Conversely, you can start radar with WeatherGirl enabled to start with something like:
 
-    doplr radar start --weathergirl --port=80 [--authentication=htpasswd]
+    doplr radar start --weathergirl [options]
 
 WeatherGirl is able to perform all the other tasks in Doplr. The goal of this interface is to expose all major features of the doplr suite via a slick web UI. WeatherGirls end game goal would be to compete with Ubuntu's JuJu and entirely replace Graphite/Grafana.
 
@@ -81,13 +81,3 @@ Doplr makes this easy to bootstrap:
 
     ssh-keygen ...
     doplr sweep ec2 --install-doplr-user -i ~/doplr.pem
-
-# Speed
-
-Under the hood, doplr uses _floom_. Because of this, doplr by default (like floom) simply uses SSH as a transport. However, floom supports _fireball mode_ - meaning that it will install an agent on the remote system which communicates without the SSH overhead. Doplr sweep can take care of this for you:
-
-    doplr sweep ec2 --install-floom-agent
-
-After that, Doplr will remember each host which has the agent installed and attempt to communicate via a websocket on port 93105
-
-Remember that all of this can be controlled via WeatherGirl!

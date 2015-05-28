@@ -39,7 +39,7 @@ const yargs = require("yargs")
 
 const argv = yargs.argv;
 
-const LOG = require("./../lib/logger")(argv);
+const log = require("./../lib/logger")(argv);
 
 if (argv._.length === 0) {
   console.log(yargs.help());
@@ -67,7 +67,7 @@ const chosenAction = argv._[0];
 if (chosenAction === "radar") {
   // Control process locally
   if (argv._.length === 1) {
-    LOG.warn(CONSTANTS.RADAR_USAGE);
+    log(CONSTANTS.RADAR_USAGE);
     process.exit(1);
   }
   // Use PM2 for service control - https://github.com/Unitech/PM2
@@ -104,7 +104,7 @@ if (chosenAction === "radar") {
       });
     });
   } else {
-    LOG.warn(CONSTANTS.RADAR_USAGE);
+    log(CONSTANTS.RADAR_USAGE);
     process.exit(1);
   }
 // `doplr <action> --radar` implies a user wants to send this task to a radar daemon
@@ -117,7 +117,7 @@ if (chosenAction === "radar") {
   // Send messages to DAEMONs via HTTP (HTTPS eventually)
   //const http = require("http");
   // POST /chosenAction { data: options } ...
-  LOG.warn(CONSTANTS.UNIMPLIMENTED);
+  log(CONSTANTS.UNIMPLIMENTED);
 
 // Run directly on this thread
 } else {
@@ -127,9 +127,10 @@ if (chosenAction === "radar") {
     targetForecast: locateForecast(
         path.resolve(argv.forecast.replace(CONSTANTS.DEFAULT_FORECAST_DIRECTORY, ""))
       ) || CONSTANTS.DEFAULT_FORECAST_DIRECTORY,
-    verbose: argv.verbose
+    verbose: argv.verbose,
+    silent: argv.silent
   });
-  LOG.info(`Forecast directory: ${doplr.forecastPath}`);
+  log.info(`Forecast directory: ${doplr.forecastPath}`);
 
   // Convert the CLI options into a URI
   // This implies 'doplr sweep host erulabs.com'
@@ -163,8 +164,14 @@ if (chosenAction === "radar") {
              chosenAction === "w") {
     const weathergirl = new doplr.WeatherGirl({});
     weathergirl.listen(argv["weathergirl-port"]);
-
+    // Pop the browser
+    if (!argv.silent && typeof argv["weathergirl-port"] !== "string") {
+      setTimeout(function () {
+        const open = require("open");
+        open("http://localhost:" + argv["weathergirl-port"]);
+      }, 100);
+    }
   } else {
-    LOG.warn(`No such action "${chosenAction}"`);
+    log(`No such action "${chosenAction}"`);
   }
 }
