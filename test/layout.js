@@ -42,6 +42,11 @@ describe("doplr", function () {
         mySweep.begin.should.be.type("function");
       });
     });
+    describe(".use", function () {
+      it("should be a function", function () {
+        mySweep.use.should.be.type("function");
+      });
+    });
   });
   describe("radar", function () {
     let myRadar = {};
