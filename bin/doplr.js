@@ -132,7 +132,7 @@ if (argv.radar) {
     }
     // Create new Sweep instance
     const sweep = new doplr.Sweep();
-    const sweepType = argv._.shift().toLowerCase();
+    let sweepType = argv._.shift().toLowerCase();
 
     // Validate arguments for different sweep types
     // Host
