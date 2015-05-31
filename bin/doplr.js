@@ -76,14 +76,7 @@ function locateForecast (p) {
 
 // The first non-hypenated option is the "action"
 const chosenAction = argv._[0];
-
-// Convert the CLI options into a URI
-// This implies 'doplr sweep host erulabs.com'
-// becomes '/sweep/host/erulabs.com'
-// Because we're passing directly to the Sweep class,
-// we don't actually need to prepend the URI with /sweep/...
 argv._.shift();
-const targetUri = "/" + argv._.join("/");
 
 // `doplr <action> --radar` implies a user wants to send this task to a radar daemon
 if (argv.radar) {
@@ -129,17 +122,77 @@ if (argv.radar) {
 
   // `doplr sweep <type> <target> [options]`
   } else if (["s", "sw", "swe", "swee", "sweep"].indexOf(chosenAction) > -1) {
-    const sweep = new doplr.Sweep({
-      targetUri: targetUri
-    });
+    if (argv._.length === 0) {
+      log("Usage: doplr sweep <host|network|cloud_provider|plugin_name> [options]\n",
+          "Example: \n\t",
+          "doplr sweep host myserver.com\n\t",
+          "doplr sweep aws AWS_SECRET_ID AWS_SECRET_KEY\n",
+          yargs.help());
+      process.exit(1);
+    }
+    // Create new Sweep instance
+    const sweep = new doplr.Sweep();
+    const sweepType = argv._.shift().toLowerCase();
+
+    // Validate arguments for different sweep types
+    // Host
+    if (["h", "ho", "hos", "host"].indexOf(sweepType) > -1) {
+      sweep.type = "host";
+      if (argv._.length === 0) {
+        log("You must provide a host to sweep!\n",
+          yargs.help());
+        process.exit(1);
+      }
+      sweep.target = argv._.shift();
+      log.debug(`Beginning ${sweep.type} sweep on ${sweep.target}`);
+      // Pass more options here...
+
+    // Network
+    } else if (["n", "ne", "net", "netw", "netwo", "networ", "network"].indexOf(sweepType) > -1) {
+      sweep.type = "network";
+      // Validate arguments here
+      log(CONSTANTS.UNIMPLIMENTED);
+
+    // AWS
+    } else if (["aws", "ec2", "amazon"].indexOf(sweepType) > -1) {
+      sweep.type = "aws";
+      // Validate arguments here
+      log(CONSTANTS.UNIMPLIMENTED);
+
+    // Google Cloud
+    } else if (["google", "gce", "goog", "gc"].indexOf(sweepType) > -1) {
+      sweep.type = "gc";
+      // Validate arguments here
+      log(CONSTANTS.UNIMPLIMENTED);
+
+    // OpenStack
+    } else if (["openstack"].indexOf(sweepType) > -1) {
+      sweep.type = "openstack";
+      // Validate arguments here
+      log(CONSTANTS.UNIMPLIMENTED);
+
+    } else {
+      // Assuming the TYPE is not a host, network or provider for which
+      // we have customer arg parsing, we should do two things:
+      // 1. We should check if we have a plugin loaded which matches this type
+      if (typeof sweep.plugins[sweepType] === "string") {
+        sweepType = sweep.plugins[sweepType];
+      }
+      if (sweep.plugins[sweepType] === undefined) {
+        // 2. If we don't, we should see if we can resolve this word
+        // If we can, we'll assume its a host
+        log(CONSTANTS.UNIMPLIMENTED);
+      } else {
+        sweep.type = sweepType;
+      }
+    }
+    // Begin the sweep!
     sweep.begin();
 
   // `doplr forecast <categoryOrKeyword> [options]`
   } else if (["f", "fo", "for", "fore", "forec",
               "foreca", "forecas", "forecast"].indexOf(chosenAction) > -1) {
-    const forecast = new doplr.Forecast({
-      targetUri: targetUri
-    });
+    const forecast = new doplr.Forecast({});
     forecast.report();
 
   } else {
