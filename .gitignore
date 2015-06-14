@@ -1,9 +1,8 @@
-build
+public
 node_modules
 npm-debug.log
 .DS_Store
 Thumbs.db
 .forecast
 tmp
-.pm2
 .radar.sock
