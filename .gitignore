@@ -6,3 +6,4 @@ Thumbs.db
 .forecast
 tmp
 .pm2
+.radar.sock
