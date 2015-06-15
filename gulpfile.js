@@ -13,6 +13,12 @@ const seq = require('run-sequence');
 
 let radarInstance;
 
+// Copy some semantic theme stuff over
+gulp.task('assets', function () {
+  return gulp.src('www/semantic/src/themes/default/assets/fonts/*')
+    .pipe(gulp.dest('public/themes/default/assets/fonts/'));
+});
+
 gulp.task('radar:restart', function () {
   if (radarInstance) {
     radarInstance.kill();
@@ -69,11 +75,10 @@ gulp.task('webpack', function () {
     .pipe(connect.reload());
 });
 
-
 gulp.task('less', function () {
   return gulp.src('www/index.less')
     .pipe(less({
-      compress: false,
+      compress: process.env.COMPRESS || false,
       rootpath: '/'
     }))
     .on('error', function (err) {
@@ -81,6 +86,20 @@ gulp.task('less', function () {
       this.emit('end');
     })
     .pipe(rename('bundle.css'))
+    .pipe(gulp.dest('public'))
+    .pipe(connect.reload());
+});
+gulp.task('semantic:less', function () {
+  return gulp.src('www/semantic/src/semantic.less')
+    .pipe(less({
+      compress: process.env.COMPRESS || false,
+      rootpath: '/'
+    }))
+    .on('error', function (err) {
+      console.log(err.toString());
+      this.emit('end');
+    })
+    .pipe(rename('vendor.css'))
     .pipe(gulp.dest('public'))
     .pipe(connect.reload());
 });
@@ -100,33 +119,28 @@ gulp.task('jade', function () {
     .pipe(connect.reload());
 });
 
-gulp.task('default', function () {
-  seq(['less', 'jade', 'webpack']);
-});
+const defaultTasks = ['less', 'semantic:less', 'jade', 'webpack', 'assets'];
+gulp.task('default', defaultTasks);
 
 gulp.task('watch', function () {
-  seq(
-    ['less', 'jade', 'webpack'],
-    ['radar:restart', 'weathergirl:start'],
-    function () {
-      // LESS FILES
-      watch(['www/index.less'], function () {
-        seq(['less']);
+  seq(defaultTasks, ['radar:restart', 'weathergirl:start'], function () {
+    // LESS FILES
+    watch(['www/index.less'], function () {
+      seq(['less']);
+    });
+    // JADE FILES
+    watch(['www/index.jade'], function () {
+      seq(['jade']);
+    });
+    // FRONTEND: JS AND JSX
+    watch(['www/*.jsx', 'www/*.js'], function () {
+      seq(['webpack']);
+    });
+    // DOPLR LIB: JS
+    watch(['lib/*.js', 'lib/sweep/*.js'], function () {
+      seq(['radar:restart'], function () {
+        connect.reload();
       });
-      // JADE FILES
-      watch(['www/index.jade'], function () {
-        seq(['jade']);
-      });
-      // FRONTEND: JS AND JSX
-      watch(['www/*.jsx', 'www/*.js'], function () {
-        seq(['webpack']);
-      });
-      // DOPLR LIB: JS
-      watch(['lib/*.js', 'lib/sweep/*.js'], function () {
-        seq(['radar:restart'], function () {
-          connect.reload();
-        });
-      });
-    }
-  );
+    });
+  });
 });

@@ -4,8 +4,16 @@ html(lang='en')
     title WeatherGirl
     meta(charset='UTF-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel="stylesheet", href="/vendor.css")
     link(rel="stylesheet", href="/bundle.css")
-  body
-    #container some react stuff
+  body.pushable
+    include './partials/mainmenu/mainmenu.jade'
+    .pusher
+      .left.side.container
+        .ui.vertical.side.menu
+          a.item some content
+
+      .drawable.area
+        div This is the drawable area - put a canvas here
 
     script(async, src="/bundle.js", type="text/javascript")

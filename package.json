@@ -8,7 +8,7 @@
   "scripts": {
     "test": "env NODE_ENV=test node node_modules/mocha/bin/_mocha --reporter spec",
     "lint": "eslint gulpfile.js bin/doplr.js lib/*.js test/*.js",
-    "build": "./node_modules/gulp/bin/gulp.js",
+    "build": "COMPRESS=true ./node_modules/gulp/bin/gulp.js",
     "develop": "./node_modules/gulp/bin/gulp.js watch"
   },
   "repository": {
