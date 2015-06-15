@@ -1,13 +1,15 @@
 {
   "name": "doplr",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The infrastructure discovery toolkit",
   "main": "lib/index.js",
   "bin": "bin/doplr.js",
   "engines": ">= 2.1.0",
   "scripts": {
     "test": "env NODE_ENV=test node node_modules/mocha/bin/_mocha --reporter spec",
-    "lint": "eslint gulpfile.js bin/doplr.js lib/*.js test/*.js"
+    "lint": "eslint gulpfile.js bin/doplr.js lib/*.js test/*.js",
+    "build": "./node_modules/gulp/bin/gulp.js",
+    "develop": "./node_modules/gulp/bin/gulp.js watch"
   },
   "repository": {
     "type": "git",
@@ -44,6 +46,7 @@
     "gulp-webpack": "^1.5.0",
     "mocha": "^2.2.5",
     "node-libs-browser": "^0.5.2",
+    "react": "^0.13.3",
     "run-sequence": "^1.1.0",
     "should": "^6.0.3",
     "webpack": "^1.9.10"

@@ -7,11 +7,11 @@ You'll want to clone the project, `npm install`, and then `npm link`. `npm link`
 ### coding style
 All coding style decisions will be enforced via ESLINT. Make sure you install it in your editor!
 ### Gulp
-Use `gulp watch` for live-reloading during development. It will listen on  http://localhost:8080 and proxy to a radar instance that it will start for you.
+Use `npm run develop` for live-reloading during development. It will listen on  http://localhost:8080 and proxy to a radar instance that it will start for you.
 ### Releases
 While the `public` directory is ignored from git, you'll need to build it before doing a release. That means:
 ```
-gulp
+npm run build
 npm publish
 ```
 

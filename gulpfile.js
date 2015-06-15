@@ -11,17 +11,6 @@ const webpack = require('gulp-webpack');
 const spawn = require('child_process').spawn;
 const seq = require('run-sequence');
 
-const WEBPACK_OPTIONS = {
-  module: {
-    loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'}
-    ]
-  },
-  output: {
-    filename: 'bundle.js'
-  }
-};
-
 let radarInstance;
 
 gulp.task('radar:restart', function () {
@@ -58,8 +47,19 @@ gulp.task('weathergirl:start', function () {
   });
 });
 
+const WEBPACK_OPTIONS = {
+  module: {
+    loaders: [
+      { test: /(^\.js$|\.jsx$)/, exclude: /node_modules/, loader: 'babel-loader'}
+    ]
+  },
+  output: {
+    filename: 'bundle.js'
+  }
+};
+
 gulp.task('webpack', function () {
-  gulp.src('www/index.js')
+  gulp.src('www/index.jsx')
     .pipe(webpack(WEBPACK_OPTIONS))
     .on('error', function (err) {
       console.log(err.toString());
@@ -109,15 +109,19 @@ gulp.task('watch', function () {
     ['less', 'jade', 'webpack'],
     ['radar:restart', 'weathergirl:start'],
     function () {
+      // LESS FILES
       watch(['www/index.less'], function () {
         seq(['less']);
       });
+      // JADE FILES
       watch(['www/index.jade'], function () {
         seq(['jade']);
       });
-      watch(['www/index.js'], function () {
+      // FRONTEND: JS AND JSX
+      watch(['www/*.jsx', 'www/*.js'], function () {
         seq(['webpack']);
       });
+      // DOPLR LIB: JS
       watch(['lib/*.js', 'lib/sweep/*.js'], function () {
         seq(['radar:restart'], function () {
           connect.reload();
