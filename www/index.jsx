@@ -2,6 +2,7 @@
 'use strict';
 
 const React = require('react');
+const jQuery = require('jquery');
 
 let hosts = [
   {
@@ -39,4 +40,4 @@ var circleEnter = circle.enter().append('circle');
 circleEnter.style('fill', 'steelblue');
 circleEnter.attr('cy', 60);
 circleEnter.attr('cx', function(d, i) { return i * 100 + 300; });
-circleEnter.attr('r', function(d) { return d/2; });
+circleEnter.attr('r', function(d) { return d / 2; });

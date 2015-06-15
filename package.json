@@ -27,8 +27,8 @@
     "koa-favicon": "^1.2.0",
     "koa-route": "^2.4.1",
     "koa-static": "^1.4.9",
-    "leveldown": "^1.1.0",
-    "levelup": "^1.1.1",
+    "leveldown": "^1.2.2",
+    "levelup": "^1.2.1",
     "open": "0.0.5",
     "yargs": "^3.10.0"
   },
@@ -36,7 +36,7 @@
     "babel-core": "^5.5.8",
     "babel-loader": "^5.1.4",
     "connect-modrewrite": "^0.8.1",
-    "eslint": "^0.22.1",
+    "eslint": "^0.23.0",
     "gulp": "^3.9.0",
     "gulp-connect": "^2.2.0",
     "gulp-jade": "^1.0.1",
@@ -44,11 +44,12 @@
     "gulp-rename": "^1.2.2",
     "gulp-watch": "^4.2.4",
     "gulp-webpack": "^1.5.0",
+    "jquery": "^2.1.4",
     "mocha": "^2.2.5",
     "node-libs-browser": "^0.5.2",
     "react": "^0.13.3",
     "run-sequence": "^1.1.0",
     "should": "^6.0.3",
-    "webpack": "^1.9.10"
+    "webpack": "^1.9.11"
   }
 }
