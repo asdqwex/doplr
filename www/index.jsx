@@ -1,23 +1,42 @@
+/* global d3 */
 'use strict';
 
 const React = require('react');
 
-const Hello = React.createClass({
-    render: function() {
-        return <div>Hello {this.props.name}</div>;
-    }
-});
+let hosts = [
+  {
+    id: 0,
+    hostname: 'host1',
+    facts: [],
+    healthPct: 70
+  },
+  {
+    id: 1,
+    hostname: 'host2',
+    facts: [],
+    healthPct: 100
+  },
+  {
+    id: 3,
+    hostname: 'host3',
+    facts: [],
+    healthPct: 50
+  }
+];
 
-//React.render(<Hello name="World2" />, document.getElementById('container'));
+const HostSearchPane = require('./partials/hostSearchPane.jsx')(React);
+React.render(<HostSearchPane data={hosts} />, document.getElementById('hostSearchPane'));
 
 const svg = d3.select('svg');
 
 var circle = svg.selectAll('circle')
-    .data([32, 57, 112, 293]);
+  .data(hosts.map(function (host){
+    return host.healthPct;
+  }));
 
 var circleEnter = circle.enter().append('circle');
 
-circleEnter.style("fill", "steelblue");
-circleEnter.attr("cy", 60);
-circleEnter.attr("cx", function(d, i) { return i * 100 + 300; });
-circleEnter.attr("r", function(d) { return Math.sqrt(d); });
+circleEnter.style('fill', 'steelblue');
+circleEnter.attr('cy', 60);
+circleEnter.attr('cx', function(d, i) { return i * 100 + 300; });
+circleEnter.attr('r', function(d) { return d/2; });

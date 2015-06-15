@@ -1,0 +1,6 @@
+npm-debug.log
+.DS_Store
+Thumbs.db
+.forecast
+tmp
+.radar.sock

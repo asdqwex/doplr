@@ -2,7 +2,8 @@
   "ecmaFeatures": {
     "blockBindings": true,
     "forOf": true,
-    "modules": true
+    "modules": true,
+    "jsx": true
   },
   "rules": {
     "global-strict": [2, "always"],
@@ -10,11 +11,13 @@
     "max-statements": [1, 30],
     "max-nested-callbacks": [1, 5],
     "no-process-exit": 0,
-    "quotes": [1, "single", "avoid-escape"]
+    "quotes": [1, "single", "avoid-escape"],
+    "no-unused-vars": 0
   },
   "env": {
     "node": true,
     "es6": true,
-    "mocha": true
+    "mocha": true,
+    "browser": true
   }
 }

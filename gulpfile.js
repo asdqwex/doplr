@@ -133,7 +133,7 @@ gulp.task('watch', function () {
       seq(['jade']);
     });
     // FRONTEND: JS AND JSX
-    watch(['www/*.jsx', 'www/*.js'], function () {
+    watch(['www/*.jsx', 'www/*.js', 'www/partials/*.jsx', 'www/partials/*/*.jsx'], function () {
       seq(['webpack']);
     });
     // DOPLR LIB: JS

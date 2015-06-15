@@ -22,7 +22,13 @@ TODO
 
 If you're using the ATOM editor (well, any editor really, but i'm only going to provide a guide for atom), you'll want to install a few packages:
 
-`apm install language-jade linter linter-eslint editorconfig`
+`apm install language-jade linter linter-eslint editorconfig react`
+
+Thats:
+  - editorconfig
+  - jade
+  - eslint / es6 support
+  - react
 
 # High level:
 
