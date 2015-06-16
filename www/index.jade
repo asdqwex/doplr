@@ -7,13 +7,13 @@ html(lang='en')
     link(rel="stylesheet", href="/vendor.css")
     link(rel="stylesheet", href="/bundle.css")
   body.pushable
-    #mainmenu
+    .ui.fixed.inverted.blue.main.menu
+      #mainmenu
     .pusher
       .drawable.area
         svg(width="100%", height="100%")
       .left.side.container
         #hostSearchPane
 
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js", charset="utf-8")
     script(async, src="/bundle.js", type="text/javascript", charset="utf-8")
     

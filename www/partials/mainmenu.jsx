@@ -23,35 +23,33 @@ module.exports = function (React) {
       }
       const healthClassString = 'ui ' + healthColor(overallHealth) + ' label';
       return (
-        <div className="mainmenu ui fixed inverted blue main menu">
-          <div className="container">
-            <a className="item title">Doplr Radar</a>
-            <a className="item">
-              <i className="find icon"></i>
-              <span>Sweep</span>
-            </a>
-            <a className="item">
-              <i className="rain icon"></i>
-              <span>Forecast</span>
-              <div className={ healthClassString }>
-                { overallHealth }%
-              </div>
-            </a>
-            <a className="item">
-              <i className="cubes icon"></i>
-              <span>Hosts</span>
-              <div className="ui label">{ hosts.length }</div>
-            </a>
-            <a className="item">
-              <i className="announcement icon"></i>
-              <span>Events</span>
-              <div className="ui label">{ events.length }</div>
-            </a>
-            <a className="right item">
-              <i className="options icon"></i>
-              <span>Settings</span>
-            </a>
-          </div>
+        <div className="mainmenu container">
+          <a className="item title">Doplr Radar</a>
+          <a className="item">
+            <i className="find icon"></i>
+            <span>Sweep</span>
+          </a>
+          <a className="item">
+            <i className="rain icon"></i>
+            <span>Forecast</span>
+            <div className={ healthClassString }>
+              { overallHealth }%
+            </div>
+          </a>
+          <a className="item">
+            <i className="cubes icon"></i>
+            <span>Hosts</span>
+            <div className="ui label">{ hosts.length }</div>
+          </a>
+          <a className="item">
+            <i className="announcement icon"></i>
+            <span>Events</span>
+            <div className="ui label">{ events.length }</div>
+          </a>
+          <a className="right item">
+            <i className="options icon"></i>
+            <span>Settings</span>
+          </a>
         </div>
       );
     }

@@ -1,4 +1,3 @@
-/* global d3 */
 'use strict';
 
 const React = require('react');
@@ -47,6 +46,7 @@ React.render(
   document.getElementById('mainmenu')
 );
 
+const d3 = require('d3');
 const svg = d3.select('svg');
 
 var circle = svg.selectAll('circle')

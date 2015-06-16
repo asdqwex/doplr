@@ -10,6 +10,7 @@ const jade = require('gulp-jade');
 const webpack = require('gulp-webpack');
 const spawn = require('child_process').spawn;
 const seq = require('run-sequence');
+const uglify = require('gulp-uglify');
 
 let radarInstance;
 
@@ -56,7 +57,7 @@ gulp.task('weathergirl:start', function () {
 const WEBPACK_OPTIONS = {
   module: {
     loaders: [
-      { test: /(^\.js$|\.jsx$)/, exclude: /node_modules/, loader: 'babel-loader'}
+      { test: /(^\.js$|\.jsx$)/, exclude: /node_modules/, loader: 'babel' }
     ]
   },
   output: {
@@ -65,13 +66,16 @@ const WEBPACK_OPTIONS = {
 };
 
 gulp.task('webpack', function () {
-  gulp.src('www/index.jsx')
+  const task = gulp.src('www/index.jsx')
     .pipe(webpack(WEBPACK_OPTIONS))
     .on('error', function (err) {
       console.log(err.toString());
       this.emit('end');
-    })
-    .pipe(gulp.dest('public'))
+    });
+  if (process.env.COMPRESS) {
+    task.pipe(uglify());
+  }
+  task.pipe(gulp.dest('public'))
     .pipe(connect.reload());
 });
 
