@@ -46,33 +46,6 @@ Doplr `forecast` is a reporting tool - a CLI version is planned, but for now it 
 
 Radar provides the ability to background and schedule sweeps via an HTTP interface. `doplr forecast` automatically launches a radar server for it to communicate with, so unless you're setting up a dedicated `doplr radar` server, this isn't very useful.
 
-If you _are_ setting up a server, the dead-simple approach is to create a script like this:
-
-```javascript
-const Doplr = require('doplr');
-
-new Doplr.Radar({
-  // If doplr cant find a database in the path, it will create one here:
-  targetDb: '.'
-})
-  // And listen on a port
-  .listen(8080);
-```
-
-Then use something like `pm2 start myradar.js` and you're off to the races!
-
-# Library
-
-    npm install doplr
-
-Now you can create your own Radar service, among other things:
-
-```javascript
-const Radar = require("doplr").Radar;
-const radar = new Radar();
-radar.listen(9040);
-```
-
 # Security
 
 By default Doplr will simply use the current user to attempt to log into systems. Obviously, this is not typically desired or secure, particularly for a Radar server. There are two ways to accomplish this task: Bootstrap a dedicated SSH user, or install a Doplr agent on the remote systems.
