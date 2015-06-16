@@ -34,13 +34,25 @@ let events = [
   }
 ];
 
-const HostSearchPane = require('./partials/hostSearchPane.jsx')(React);
+const helpers = {
+  healthColor: function (health) {
+    let color = 'red';
+    if (health > 80) {
+      color = 'green';
+    } else if (health > 50) {
+      color = 'orange';
+    }
+    return color;
+  }
+};
+
+const HostSearchPane = require('./partials/hostSearchPane.jsx')(React, helpers);
 React.render(
   <HostSearchPane hostData={hosts} />,
   document.getElementById('hostSearchPane')
 );
 
-const Mainmenu = require('./partials/mainmenu.jsx')(React);
+const Mainmenu = require('./partials/mainmenu.jsx')(React, helpers);
 React.render(
   <Mainmenu hostData={hosts} eventData={events} />,
   document.getElementById('mainmenu')

@@ -1,12 +1,14 @@
 'use strict';
-module.exports = function (React) {
+module.exports = function (React, helpers) {
   const HostSearchPaneItem = React.createClass({
     render: function() {
       const hostData = this.props.hostData;
+      const healthColor = helpers.healthColor;
+      const healthClassString = 'ui ' + healthColor(hostData.healthPct) + ' label';
       return (
         <a className="hostSearchPaneItem item">
-          { hostData.hostname || "no name" }
-          <div className="ui label">{ hostData.healthPct }</div>
+          { hostData.hostname || 'no name' }
+          <div className={healthClassString}>{ hostData.healthPct }</div>
         </a>
       );
     }

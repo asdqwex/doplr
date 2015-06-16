@@ -14,9 +14,11 @@ const uglify = require('gulp-uglify');
 
 let radarInstance;
 
-// Copy some semantic theme stuff over
+// Copy some theme stuff over
 gulp.task('assets', function () {
-  return gulp.src('www/semantic/src/themes/default/assets/fonts/*')
+  gulp.src('www/favicon.ico')
+    .pipe(gulp.dest('public/'));
+  gulp.src('www/semantic/src/themes/default/assets/fonts/*')
     .pipe(gulp.dest('public/themes/default/assets/fonts/'));
 });
 

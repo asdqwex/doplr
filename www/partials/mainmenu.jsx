@@ -1,10 +1,11 @@
 'use strict';
 
-module.exports = function (React) {
+module.exports = function (React, helpers) {
   const Mainmenu = React.createClass({
     render: function() {
       const hosts = this.props.hostData;
       const events = this.props.eventData;
+      const healthColor = helpers.healthColor;
       let overallHealth = Math.round(
         hosts.map(function (host) {
           return host.healthPct || 0;
@@ -12,15 +13,6 @@ module.exports = function (React) {
           return p + c;
         }) / hosts.length
       );
-      function healthColor(health) {
-        let color = 'red';
-        if (health > 80) {
-          color = 'green';
-        } else if (health > 50) {
-          color = 'orange';
-        }
-        return color;
-      }
       const healthClassString = 'ui ' + healthColor(overallHealth) + ' label';
       return (
         <div className="mainmenu container">
