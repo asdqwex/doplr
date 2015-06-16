@@ -5,7 +5,7 @@
 
 // Load lib/doplr
 const Doplr = require('./../lib');
-const CONSTANTS = require('./../lib/constants');
+const CONSTANTS = Doplr.CONSTANTS;
 
 const fs = require('fs');
 const path = require('path');
@@ -26,28 +26,22 @@ const yargs = require('yargs')
   .describe('p', 'ssh port')
   .alias('c', 'config')
   .describe('c', 'load configuration options from a .json file')
-  .alias('f', 'forecast-path')
-  .default('f', '.')
-  .describe('f', 'use a specific forecast directory')
+  .alias('d', 'db-path')
+  .default('d', '.')
+  .describe('d', 'use a specific db directory')
   .describe('s', 'be silent')
   .alias('s', 'silence')
   .default('s', false)
   .alias('P', 'radar-port')
   .default('radar-port', CONSTANTS.DEFAULT_RADARPORT)
-  .describe('radar-port', `the port Doplr's API will bind to`)
-  .alias('r', 'radar')
-  .describe('radar', 'target a remote radar')
-  .describe('no-weathergirl', 'disable the web interface')
+  .describe('radar-port', "the port Doplr's API will bind to")\
   .command('sweep', 'Discover a host, network, or cloud provider')
-  .command('forecast', 'A CLI tool for browsing the forecast data')
-  .command('radar', 'Run Doplr as a server')
+  .command('forecast', 'Explore the data Doplr has discovered')
+  .command('radar', 'Doplr HTTP API')
   .example('doplr sweep', 'sweep all known infrastructure')
   .example('doplr sweep host foo.com', 'gather info about foo.com')
   .example('doplr forecast', 'display overview')
-  .example('doplr forecast host foo.com', 'display info about foo.com')
-  .example('doplr radar', 'launch the web interface')
-  .example('doplr <command> --radar=radar.foo.com', 'Run against a remote radar')
-  .example('node ./bin/radar.js', 'run your own radar server')
+  .example('doplr radar', 'HTTP API')
   .help('h')
   .alias('h', 'help')
   .epilog('Visit https://github.com/asdqwex/doplr for more information!');
@@ -60,16 +54,16 @@ if (argv._.length === 0) {
   process.exit(1);
 }
 
-// Finds the nearest .forecast storage, unless one has been specified
-function locateForecast (p) {
-  const fp = p + path.sep + CONSTANTS.DEFAULT_FORECAST_DIRECTORY;
+// Finds the nearest weather database, unless one has been specified
+function locateDB (p) {
+  const fp = p + path.sep + CONSTANTS.DEFAULT_DB_PATH;
   if (fs.existsSync(fp)) {
     return fp;
   }
   p = p.split(path.sep);
   p.pop();
   if (p.length > 0) {
-    return locateForecast(p.join(path.sep));
+    return locateDB(p.join(path.sep));
   }
   return false;
 }
@@ -91,34 +85,20 @@ if (argv.radar) {
 
 } else {
 
-  // Create a Doplr instance
-  const doplr = new Doplr({
-    // Locate the nearest .forecast - If none is found, we'll create one where we are
-    targetForecast: locateForecast(
-        path.resolve(argv['forecast-path'].replace(CONSTANTS.DEFAULT_FORECAST_DIRECTORY, ''))
-      ) || CONSTANTS.DEFAULT_FORECAST_DIRECTORY,
-    verbose: argv.verbose,
-    silent: argv.silent
-  });
-  log.info(`Forecast directory: ${doplr.forecastPath}`);
+  const myDBPath = locateDB(
+      path.resolve(argv['db-path'].replace(CONSTANTS.DEFAULT_DB_PATH, ''))
+    ) || CONSTANTS.DEFAULT_DB_PATH;
+
+  log.info(`DB path: ${myDBPath}`);
 
   // `doplr radar` Launch the API
   if (['r', 'ra', 'rad', 'rada', 'radar'].indexOf(chosenAction) > -1) {
-    const radar = new doplr.Radar({
-      weathergirl: !argv['no-weathergirl']
+    const radar = new Doplr.Radar({
+      verbose: argv.verbose,
+      silent: argv.silent,
+      db: myDBPath
     });
     radar.listen(argv['radar-port']);
-
-    // Pop the browser if we're hosting weathergirl
-    if (!argv['no-weathergirl'] &&
-    !argv.silent && // And we're not silent
-    typeof argv['radar-port'] === 'number' && // And radar is listening on a TCP port
-    process.platform !== 'linux') { // And we're not on linux (shrug)
-      setTimeout(function () {
-        const open = require('open');
-        open('http://localhost:' + argv['radar-port']);
-      }, 100);
-    }
 
   // `doplr sweep <type> <target> [options]`
   } else if (['s', 'sw', 'swe', 'swee', 'sweep'].indexOf(chosenAction) > -1) {
@@ -131,7 +111,9 @@ if (argv.radar) {
       process.exit(1);
     }
     // Create new Sweep instance
-    const sweep = new doplr.Sweep();
+    const sweep = new Doplr.Sweep({
+      db: myDBPath
+    });
     let sweepType = argv._.shift().toLowerCase();
 
     // Validate arguments for different sweep types
@@ -192,8 +174,28 @@ if (argv.radar) {
   // `doplr forecast <categoryOrKeyword> [options]`
   } else if (['f', 'fo', 'for', 'fore', 'forec',
               'foreca', 'forecas', 'forecast'].indexOf(chosenAction) > -1) {
-    const forecast = new doplr.Forecast({});
-    forecast.report();
+
+    // Spawn a radar
+    const radar = new Doplr.Radar({
+      verbose: argv.verbose,
+      silent: argv.silent,
+      db: myDBPath
+    });
+    radar.listen(argv['radar-port']);
+
+    // CLI tool:
+    // const forecast = new Doplr.Forecast({});
+    // forecast.report();
+
+    // Pop the browser!
+    if (!argv.silent && // And we're not silent
+    typeof argv['radar-port'] === 'number' && // And radar is listening on a TCP port
+    process.platform !== 'linux') { // And we're not on linux (shrug)
+      setTimeout(function () {
+        const open = require('open');
+        open('http://localhost:' + argv['radar-port']);
+      }, 100);
+    }
 
   } else {
     log(`No such action "${chosenAction}"\n\n`, yargs.help());

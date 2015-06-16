@@ -12,49 +12,54 @@ To use the library:
 
 `npm install --save doplr`
 
-Composed of several utilities: `sweep` for discovery, `forecast` for visualization and `radar` - an HTTP API for queuing sweeps and accessing the forecast data as well as a graphical look at the `forecast`.
+Composed of several utilities: `sweep` for discovery, `forecast` for visualization and `radar` - an API which allows access to the data descovered by doplr.
 
-Doplr is built on top of _floom_, the streaming infrastructure build system. Doplr and floom aim to go hand in hand in tackling Javascript's final frontier - it has conquered the browser and the server - now it's time to take on infrastructure and operations.
+## The Weather
 
-## The Forecast
-
-Information Doplr discovers is added to the **forecast**. A forecast is what Doplr calls the information it has collected so far. Running Doplr sweep will automatically create a .forecast directory, and all subsequent sweeps in that directory or any subdirectory will _append_ to that forecast. It is generally assumed you'd use distinct directories for distinct infrastructures (think git repositories). Like git, Doplr will search up the directory chain for a .forecast (exactly like git's behavior).
+Information Doplr discovers is added to the **weather** database, which is powered by LevelDB. Doplr will ask you if you'd like to create a new .weather directory if it cannot find one in your path.
 
 # Sweep
 
-Sweep is Doplr's discovery action. It is able to discover hosts, networks, and most importantly, cloud provider APIs. Doplr's sweeps are powered by _floom_, both for discovering hosts via a cloud providers API, as well as probing hosts themselves via SSH or floom's fireball daemon.
+Sweep is Doplr's discovery action. It is able to discover hosts, networks, and most importantly, cloud provider APIs.
 
-    doplr sweep host myserver.com
+    doplr sweep host examplehost
 
-Assuming you can SSH to myserver.com, Doplr will add that host to the "forecast". Even if you can't, doplr will collect information based on the plugins configured.
+Doplr will use whatever plugins it has to collect information about "examplehost" and add this information to the weather database!
 
 Doplr can also sweep entire cloud providers, doing all the hard work for you!
 
     doplr sweep aws AWS_SECRET_ID AWS_SECRET_KEY
 
-We aim to support sweeping AWS, Google Cloud, Azure and OpenStack.
-
 To sweep the entire forecast (all known elements in the infrastructure):
 
     doplr sweep
-
-Note that sweeps can take a **long time**. Consider using a dedicated Doplr Radar server!
 
 # Forecast
 
     doplr forecast
 
-Doplr will report on its findings and give a summary of the state of the infrastructure as currently reported in the forecast file. Note that this action does not do a sweep! It simply generates reports from the current .forecast. Doplr forecast can be run in verbose mode: `doplr forecast -v` or you can specifically ask about a particular host or device: `doplr forecast myserver.com`.
+Doplr `forecast` is a reporting tool - a CLI version is planned, but for now it is web-browser only. It'll be worth it though!
 
 # Radar
 
     doplr radar
 
-Radar provides the ability to background and schedule sweeps via an HTTP interface. It also has a pretty web interface which you can access at http://localhost:9040 by default.
+Radar provides the ability to background and schedule sweeps via an HTTP interface. `doplr forecast` automatically launches a radar server for it to communicate with, so unless you're setting up a dedicated `doplr radar` server, this isn't very useful.
 
-You can also target a remote radar service with the `--radar` flag on any other operation. For example:
+If you _are_ setting up a server, the dead-simple approach is to create a script like this:
 
-    doplr sweep --radar=radar.mystartup.com
+```javascript
+const Doplr = require('doplr');
+
+new Doplr.Radar({
+  // If doplr cant find a database in the path, it will create one here:
+  targetDb: '.'
+})
+  // And listen on a port
+  .listen(8080);
+```
+
+Then use something like `pm2 start myradar.js` and you're off to the races!
 
 # Library
 
@@ -63,15 +68,10 @@ You can also target a remote radar service with the `--radar` flag on any other 
 Now you can create your own Radar service, among other things:
 
 ```javascript
-const LibDoplr = require("doplr");
-const doplr = new LibDoplr();
-const radar = new doplr.Radar();
+const Radar = require("doplr").Radar;
+const radar = new Radar();
 radar.listen(9040);
 ```
-
-# WeatherGirl
-
-WeatherGirl is a pretty web interface which can browse the forecast and schedule and run sweeps. Doplr's Radar will host it for you automatically. The goal of this interface is to expose all major features of the doplr suite via a slick web UI.
 
 # Security
 
