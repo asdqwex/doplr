@@ -9,7 +9,7 @@ let hosts = [
     id: 0,
     hostname: 'host1',
     facts: [],
-    healthPct: 70
+    healthPct: 90
   },
   {
     id: 1,
@@ -18,15 +18,34 @@ let hosts = [
     healthPct: 100
   },
   {
-    id: 3,
+    id: 2,
     hostname: 'host3',
     facts: [],
-    healthPct: 50
+    healthPct: 80
+  }
+];
+
+let events = [
+  {
+    some: 'facts',
+    go: 'here'
+  }, {
+    // this event involves some hosts
+    involves: [ 1, 2 ]
   }
 ];
 
 const HostSearchPane = require('./partials/hostSearchPane.jsx')(React);
-React.render(<HostSearchPane data={hosts} />, document.getElementById('hostSearchPane'));
+React.render(
+  <HostSearchPane hostData={hosts} />,
+  document.getElementById('hostSearchPane')
+);
+
+const Mainmenu = require('./partials/mainmenu.jsx')(React);
+React.render(
+  <Mainmenu hostData={hosts} eventData={events} />,
+  document.getElementById('mainmenu')
+);
 
 const svg = d3.select('svg');
 

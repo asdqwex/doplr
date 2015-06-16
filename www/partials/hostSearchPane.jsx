@@ -2,20 +2,20 @@
 module.exports = function (React) {
   const HostSearchPaneItem = React.createClass({
     render: function() {
-      const data = this.props.data;
+      const hostData = this.props.hostData;
       return (
         <a className="hostSearchPaneItem item">
-          { data.hostname }
-          <div className="ui label">{ data.healthPct }</div>
+          { hostData.hostname || "no name" }
+          <div className="ui label">{ hostData.healthPct }</div>
         </a>
       );
     }
   });
   const HostSearchPane = React.createClass({
     render: function() {
-      const hostNodes = this.props.data.map(function (host) {
+      const hostNodes = this.props.hostData.map(function (host) {
         return (
-          <HostSearchPaneItem key={host.id} data={host}></HostSearchPaneItem>
+          <HostSearchPaneItem key={host.id} hostData={host}></HostSearchPaneItem>
         );
       });
       return (
