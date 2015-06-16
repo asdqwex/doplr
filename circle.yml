@@ -2,7 +2,13 @@ general:
   branches:
     ignore:
       - gh-pages
+      - working
+      - seandon
+
+dependencies:
+  override:
+    - npm install --production
 
 machine:
   node:
-    version: iojs-v2.1.0
+    version: iojs-v2.3.0
