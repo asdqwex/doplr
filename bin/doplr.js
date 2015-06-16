@@ -34,7 +34,7 @@ const yargs = require('yargs')
   .default('s', false)
   .alias('P', 'radar-port')
   .default('radar-port', CONSTANTS.DEFAULT_RADARPORT)
-  .describe('radar-port', "the port Doplr's API will bind to")\
+  .describe('radar-port', "the port Doplr's API will bind to")
   .command('sweep', 'Discover a host, network, or cloud provider')
   .command('forecast', 'Explore the data Doplr has discovered')
   .command('radar', 'Doplr HTTP API')
