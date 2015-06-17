@@ -110,46 +110,43 @@ if (argv.radar) {
           yargs.help());
       process.exit(1);
     }
-    // Create new Sweep instance
-    const sweep = new Doplr.Sweep({
-      db: myDBPath
-    });
     let sweepType = argv._.shift().toLowerCase();
-
     // Validate arguments for different sweep types
     // Host
+    let type = '';
+    let target = '';
     if (['h', 'ho', 'hos', 'host'].indexOf(sweepType) > -1) {
-      sweep.type = CONSTANTS.HOST;
+      type = CONSTANTS.HOST;
       if (argv._.length === 0) {
         log('You must provide a host to sweep!\n',
           yargs.help());
         process.exit(1);
       }
-      sweep.target = argv._.shift();
+      target = argv._.shift();
       log.debug(`Beginning ${sweep.type} sweep on ${sweep.target}`);
       // Pass more options here...
 
     // Network
     } else if (['n', 'ne', 'net', 'netw', 'netwo', 'networ', 'network'].indexOf(sweepType) > -1) {
-      sweep.type = CONSTANTS.NETWORK;
+      type = CONSTANTS.NETWORK;
       // Validate arguments here
       log(CONSTANTS.UNIMPLIMENTED);
 
     // AWS
     } else if (['aws', 'ec2', 'amazon'].indexOf(sweepType) > -1) {
-      sweep.type = CONSTANTS.AWS;
+      type = CONSTANTS.AWS;
       // Validate arguments here
       log(CONSTANTS.UNIMPLIMENTED);
 
     // Google Cloud
     } else if (['google', 'gce', 'goog', 'gc'].indexOf(sweepType) > -1) {
-      sweep.type = CONSTANTS.GOOGLE_CLOUD;
+      type = CONSTANTS.GOOGLE_CLOUD;
       // Validate arguments here
       log(CONSTANTS.UNIMPLIMENTED);
 
     // OpenStack
     } else if (['openstack'].indexOf(sweepType) > -1) {
-      sweep.type = CONSTANTS.OPENSTACK;
+      type = CONSTANTS.OPENSTACK;
       // Validate arguments here
       log(CONSTANTS.UNIMPLIMENTED);
 
@@ -157,17 +154,23 @@ if (argv.radar) {
       // Assuming the TYPE is not a host, network or provider for which
       // we have customer arg parsing, we should do two things:
       // 1. We should check if we have a plugin loaded which matches this type
-      if (typeof sweep.types[sweepType] === 'string') {
+      if (typeof Doplr.Sweep.types[sweepType] === 'string') {
         sweepType = sweep.types[sweepType];
       }
-      if (sweep.types[sweepType] === undefined) {
-        // 2. If we don't, we should see if we can resolve this word
-        // If we can, we'll assume its a host
-        log(CONSTANTS.UNIMPLIMENTED);
+      if (Doplr.Sweep.types[sweepType] === undefined) {
+        type = 'host';
+        target = sweepType;
       } else {
-        sweep.type = sweepType;
+        type = sweepType;
       }
     }
+    // Create new Sweep instance
+    const sweep = new Doplr.Sweep({
+      db: myDBPath,
+      type: type,
+      target: target
+    });
+
     // Begin the sweep!
     sweep.begin();
 
